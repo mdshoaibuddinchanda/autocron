@@ -197,7 +197,7 @@ pytest -m linux           # Platform-specific
 
 **Test matrix:**
 - ✅ Windows, Linux, macOS
-- ✅ Python 3.10, 3.11, 3.12, 3.13
+- ✅ Python 3.10, 3.11, 3.12, 3.13, 3.14
 - ✅ 82/84 tests passing (69% coverage)
 
 ---

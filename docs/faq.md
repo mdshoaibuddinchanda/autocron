@@ -16,7 +16,7 @@ AutoCron is a cross-platform Python library for scheduling and automating tasks.
 
 ### What Python versions are supported?
 
-Python 3.10, 3.11, 3.12, and 3.13.
+Python 3.10, 3.11, 3.12, 3.13, and 3.14.
 
 ### Is AutoCron free?
 
