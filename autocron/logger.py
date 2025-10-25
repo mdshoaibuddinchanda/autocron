@@ -7,9 +7,7 @@ and multiple output handlers.
 
 import logging
 import os
-from datetime import datetime
 from logging.handlers import RotatingFileHandler
-from pathlib import Path
 from typing import Optional
 
 from autocron.utils import ensure_directory, get_default_log_path

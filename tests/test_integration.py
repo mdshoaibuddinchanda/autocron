@@ -1,7 +1,6 @@
 """Integration tests for AutoCron."""
 
 import os
-import tempfile
 import time
 
 import pytest

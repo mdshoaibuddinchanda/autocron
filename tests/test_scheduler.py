@@ -1,11 +1,10 @@
 """Tests for scheduler functionality."""
 
 import time
-from datetime import datetime
 
 import pytest
 
-from autocron.scheduler import AutoCron, SchedulingError, Task, schedule
+from autocron.scheduler import AutoCron, Task, schedule
 
 
 class TestTask:

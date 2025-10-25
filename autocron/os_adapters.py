@@ -9,7 +9,6 @@ import os
 import subprocess  # nosec B404 - Required for cross-platform task scheduling
 import tempfile
 from abc import ABC, abstractmethod
-from pathlib import Path
 from typing import List, Optional
 
 from autocron.utils import get_platform_info, is_linux, is_macos, is_windows, sanitize_task_name
@@ -142,9 +141,8 @@ class WindowsAdapter(OSAdapter):
                     "/F",  # Force create, overwrite if exists
                 ]
 
-                result = subprocess.run(  # nosec B603 B607 - Controlled schtasks command with validated inputs
-                    cmd, capture_output=True, text=True, check=False
-                )
+                # nosec B603 B607 - Controlled schtasks command with validated inputs
+                result = subprocess.run(cmd, capture_output=True, text=True, check=False)
 
                 if result.returncode == 0:
                     return True
@@ -164,9 +162,8 @@ class WindowsAdapter(OSAdapter):
             full_task_name = f"{self.TASK_PREFIX}{sanitize_task_name(task_name)}"
 
             cmd = ["schtasks", "/Delete", "/TN", full_task_name, "/F"]
-            result = subprocess.run(  # nosec B603 B607 - Controlled schtasks command with validated task name
-                cmd, capture_output=True, text=True, check=False
-            )
+            # nosec B603 B607 - Controlled schtasks command with validated task name
+            result = subprocess.run(cmd, capture_output=True, text=True, check=False)
 
             return result.returncode == 0
         except Exception:
@@ -192,7 +189,7 @@ class WindowsAdapter(OSAdapter):
                         task_name = parts[1].strip()
                         if task_name.startswith(self.TASK_PREFIX):
                             # Remove prefix to get original name
-                            original_name = task_name[len(self.TASK_PREFIX) :]
+                            original_name = task_name[len(self.TASK_PREFIX):]
                             tasks.append(original_name)
 
             return tasks

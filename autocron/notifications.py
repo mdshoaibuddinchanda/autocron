@@ -219,7 +219,7 @@ class NotificationManager:
                 try:
                     success = self.notifiers[channel].send(title, message, **kwargs)
                     results[channel] = success
-                except Exception as e:
+                except Exception:  # noqa: S110
                     results[channel] = False
             else:
                 results[channel] = False

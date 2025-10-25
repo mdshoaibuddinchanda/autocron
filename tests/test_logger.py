@@ -1,10 +1,7 @@
 """Tests for logger functionality."""
 
-import logging
 import os
 import tempfile
-
-import pytest
 
 from autocron.logger import AutoCronLogger, get_logger, reset_logger
 

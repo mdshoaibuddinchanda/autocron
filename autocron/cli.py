@@ -35,7 +35,7 @@ def create_parser() -> argparse.ArgumentParser:
     schedule_parser.add_argument("--notify", choices=["desktop", "email"], help="Notification type")
 
     # List command
-    list_parser = subparsers.add_parser("list", help="List scheduled tasks")
+    subparsers.add_parser("list", help="List scheduled tasks")
 
     # Stop command
     stop_parser = subparsers.add_parser("stop", help="Stop a scheduled task")
@@ -102,7 +102,8 @@ def cmd_list(args: argparse.Namespace) -> int:
             schedule = f"{task.schedule_type}={task.schedule_value}"
 
             print(
-                f"{task.name:<30} {schedule:<20} {status:<10} {task.run_count:<10} {task.fail_count:<10}"
+                f"{task.name:<30} {schedule:<20} {status:<10} "
+                f"{task.run_count:<10} {task.fail_count:<10}"
             )
 
         print(f"\nTotal tasks: {len(tasks)}\n")

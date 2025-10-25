@@ -6,8 +6,6 @@ Practical examples for common automation scenarios.
 
 from datetime import datetime
 
-import requests
-
 from autocron import AutoCron
 
 

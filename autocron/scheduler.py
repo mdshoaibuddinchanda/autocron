@@ -5,7 +5,6 @@ Provides the main scheduler class and decorators for task scheduling.
 """
 
 import contextlib
-import os
 import subprocess  # nosec B404 - Required for executing Python scripts
 import sys
 import threading
@@ -15,15 +14,13 @@ from datetime import datetime, timedelta
 from functools import wraps
 from typing import Any, Callable, Dict, List, Optional, Union
 
-from autocron.logger import AutoCronLogger, get_logger
-from autocron.notifications import NotificationManager, get_notification_manager
+from autocron.logger import get_logger
+from autocron.notifications import get_notification_manager
 from autocron.os_adapters import OSAdapter, OSAdapterError, get_os_adapter
 from autocron.utils import (
-    TimeParseError,
     calculate_retry_delay,
     get_next_run_time,
     parse_interval,
-    sanitize_task_name,
     validate_cron_expression,
 )
 
@@ -447,9 +444,9 @@ class AutoCron:
 
                 # Execute task
                 if task.func:
-                    result = self._execute_function(task.func, task.timeout)
+                    self._execute_function(task.func, task.timeout)
                 else:
-                    result = self._execute_script(task.script, task.timeout)
+                    self._execute_script(task.script, task.timeout)
 
                 duration = time.time() - start_time
 
@@ -531,7 +528,8 @@ class AutoCron:
     def _execute_script(self, script: str, timeout: Optional[int]) -> Any:
         """Execute a script with timeout."""
         try:
-            result = subprocess.run(  # nosec B603 - Controlled execution of user-specified Python scripts with timeout
+            # nosec B603 - Controlled execution of user-specified Python scripts
+            result = subprocess.run(
                 [sys.executable, script],
                 capture_output=True,
                 text=True,
@@ -558,13 +556,16 @@ class AutoCron:
                     self.notification_manager.setup_email(task.email_config)
                 else:
                     self.logger.warning(
-                        f"Email notification requested but no config provided for task '{task.name}'"
+                        f"Email notification requested but no config provided "
+                        f"for task '{task.name}'"
                     )
 
     def _notify_success(self, task: Task, duration: float) -> None:
         """Send success notification."""
         channels = [task.notify] if isinstance(task.notify, str) else task.notify
-        self.notification_manager.notify_task_success(task.name, duration, channels)
+        self.notification_manager.notify_task_success(
+            task.name, duration, channels
+        )
 
     def _notify_failure(self, task: Task, error: str, attempt: int) -> None:
         """Send failure notification."""
@@ -731,8 +732,7 @@ def start_scheduler(blocking: bool = True) -> None:
     Args:
         blocking: Whether to block the main thread
     """
-    global _global_scheduler
-
+    # Global scheduler referenced but not assigned in this scope
     if _global_scheduler is None:
         raise RuntimeError("No tasks scheduled. Use @schedule decorator first.")
 
