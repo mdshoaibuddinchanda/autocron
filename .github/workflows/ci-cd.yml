@@ -205,7 +205,7 @@ jobs:
         with:
           repository_url: https://test.pypi.org/legacy/
           username: __token__
-          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          password: ${{ secrets.TEST_PYPI_TOKEN }}
           skip-existing: true
         continue-on-error: true
 
@@ -234,6 +234,6 @@ jobs:
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          password: ${{ secrets.PYPI_API_TOKEN }}
+          password: ${{ secrets.PYPI_TOKEN }}
           skip-existing: true
         continue-on-error: true
