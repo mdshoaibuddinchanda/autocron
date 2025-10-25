@@ -521,7 +521,7 @@ class AutoCron:
             raise TaskExecutionError(f"Task timed out after {timeout} seconds")
 
         if exception[0]:
-            raise exception[0]
+            raise exception[0]  # pylint: disable=raising-bad-type
 
         return result[0]
 

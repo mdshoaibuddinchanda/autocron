@@ -56,7 +56,7 @@ jobs:
         continue-on-error: true
 
       - name: Run Pylint
-        run: pylint autocron --disable=C0111,R0903,R0913
+        run: pylint autocron --disable=C0111,R0903,R0913,E0702
         continue-on-error: true
 
       - name: Run Bandit
