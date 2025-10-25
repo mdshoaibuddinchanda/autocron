@@ -189,7 +189,7 @@ class WindowsAdapter(OSAdapter):
                         task_name = parts[1].strip()
                         if task_name.startswith(self.TASK_PREFIX):
                             # Remove prefix to get original name
-                            original_name = task_name[len(self.TASK_PREFIX):]
+                            original_name = task_name[len(self.TASK_PREFIX) :]
                             tasks.append(original_name)
 
             return tasks

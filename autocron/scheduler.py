@@ -563,9 +563,7 @@ class AutoCron:
     def _notify_success(self, task: Task, duration: float) -> None:
         """Send success notification."""
         channels = [task.notify] if isinstance(task.notify, str) else task.notify
-        self.notification_manager.notify_task_success(
-            task.name, duration, channels
-        )
+        self.notification_manager.notify_task_success(task.name, duration, channels)
 
     def _notify_failure(self, task: Task, error: str, attempt: int) -> None:
         """Send failure notification."""
