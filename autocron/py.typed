@@ -1,0 +1,16 @@
+"""Type stub file for AutoCron package."""
+
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    List,
+    Optional,
+    Union,
+)
+
+from autocron.scheduler import AutoCron as AutoCron
+from autocron.scheduler import schedule as schedule
+
+__version__: str
+__all__: List[str]
