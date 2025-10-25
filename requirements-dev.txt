@@ -11,7 +11,7 @@ pytest-mock>=3.11.0
 pytest-timeout>=2.1.0
 
 # Code formatting
-black>=23.7.0
+black>=24.8.0
 isort>=5.12.0
 
 # Linting

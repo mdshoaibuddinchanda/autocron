@@ -38,7 +38,7 @@ dependencies = [
     "croniter>=1.4.0",
     "python-crontab>=3.0.0; platform_system=='Linux' or platform_system=='Darwin'",
     "pywin32>=305; platform_system=='Windows'",
-    "tqdm>=4.65.0",
+    "tqdm>=4.66.5",
     "psutil>=5.9.0",
     "pyyaml>=6.0",
 ]
@@ -49,7 +49,7 @@ dev = [
     "pytest-cov>=4.1.0",
     "pytest-mock>=3.11.0",
     "pytest-timeout>=2.1.0",
-    "black>=23.7.0",
+    "black>=24.8.0",
     "flake8>=6.1.0",
     "mypy>=1.5.0",
     "isort>=5.12.0",
