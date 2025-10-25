@@ -188,13 +188,15 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: dist-${{ github.sha }}
+          path: dist/
+
       - name: Publish to Test PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          repository_url: https://test.pypi.org/legacy/
-          username: __token__
+          repository-url: https://test.pypi.org/legacy/
           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
           skip-existing: true
+          attestations: false
         continue-on-error: true
 
   # -------------------------
@@ -216,9 +218,12 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: dist-${{ github.sha }}
+          path: dist/
+
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}
           skip-existing: true
+          attestations: false
         continue-on-error: true
