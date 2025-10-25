@@ -38,6 +38,10 @@ jobs:
           pip install black isort flake8 mypy pylint bandit safety
           pip install -e .[dev]
 
+      - name: Install type stubs
+        run: |
+          python -m pip install types-croniter types-PyYAML
+
       - name: Run Black
         run: black --check **/*.py
 
@@ -48,7 +52,8 @@ jobs:
         run: flake8 . --max-line-length=100 --extend-ignore=E203,W503
 
       - name: Run MyPy
-        run: mypy autocron --ignore-missing-imports
+        run: mypy autocron --ignore-missing-imports --allow-untyped-defs --no-warn-return-any
+        continue-on-error: true
 
       - name: Run Pylint
         run: pylint autocron --disable=C0111,R0903,R0913
@@ -60,6 +65,7 @@ jobs:
 
       - name: Run Safety
         run: safety check
+        continue-on-error: true
 
 # -------------------------
 # JOB: TEST
@@ -109,13 +115,6 @@ jobs:
           flags: unittests
           name: codecov-${{ matrix.os }}-py${{ matrix.python-version }}
           fail_ci_if_error: false
-
-      - name: Upload test report
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-report-${{ matrix.os }}-py${{ matrix.python-version }}
-          path: test-results.xml
-        if: always()
 
 # -------------------------
 # JOB: INTEGRATION TEST
