@@ -17,7 +17,7 @@ AutoCron makes task scheduling painless—no cron syntax, no platform-specific s
 
 **Install:**
 ```bash
-pip install autocron
+pip install autocron-scheduler
 ```
 
 **Schedule a task:**
@@ -50,12 +50,12 @@ That's it. AutoCron handles the rest.
 
 **Basic:**
 ```bash
-pip install autocron
+pip install autocron-scheduler
 ```
 
 **With notifications:**
 ```bash
-pip install autocron[notifications]
+pip install autocron-scheduler[notifications]
 ```
 
 **From source:**
