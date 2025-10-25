@@ -69,8 +69,14 @@ python -m venv venv
 # Activate virtual environment
 .\venv\Scripts\activate
 
+# Install dependencies from requirements file
+pip install -r requirements.txt
+
+# For development (includes testing, linting, etc.)
+pip install -r requirements-dev.txt
+
 # Install in development mode
-pip install -e .[dev,notifications]
+pip install -e .
 ```
 
 ### Step 2: Verify Installation

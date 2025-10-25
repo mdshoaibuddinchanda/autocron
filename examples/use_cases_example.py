@@ -74,70 +74,43 @@ def backup_database():
     print("Database backup completed!")
 
 
-if __name__ == '__main__':
-    scheduler = AutoCron(
-        log_path='./logs/use_cases.log',
-        log_level='INFO'
-    )
-    
+if __name__ == "__main__":
+    scheduler = AutoCron(log_path="./logs/use_cases.log", log_level="INFO")
+
     # Data Pipeline - Every 4 hours
     scheduler.add_task(
-        name="data_pipeline",
-        func=data_pipeline,
-        every='4h',
-        retries=3,
-        notify='desktop'
+        name="data_pipeline", func=data_pipeline, every="4h", retries=3, notify="desktop"
     )
-    
+
     # Web Scraping - Every 30 minutes
-    scheduler.add_task(
-        name="web_scraper",
-        func=scrape_website,
-        every='30m',
-        retries=5,
-        timeout=120
-    )
-    
+    scheduler.add_task(name="web_scraper", func=scrape_website, every="30m", retries=5, timeout=120)
+
     # System Maintenance - Daily at 3 AM
-    scheduler.add_task(
-        name="system_cleanup",
-        func=system_cleanup,
-        cron='0 3 * * *',
-        retries=2
-    )
-    
+    scheduler.add_task(name="system_cleanup", func=system_cleanup, cron="0 3 * * *", retries=2)
+
     # Weekly Report - Every Monday at 9 AM
     scheduler.add_task(
         name="weekly_report",
         func=generate_weekly_report,
-        cron='0 9 * * 1',
-        notify='email',
+        cron="0 9 * * 1",
+        notify="email",
         email_config={
-            'smtp_server': 'smtp.gmail.com',
-            'smtp_port': 587,
-            'from_email': 'reports@company.com',
-            'to_email': 'team@company.com',
-            'password': 'your_password'
-        }
+            "smtp_server": "smtp.gmail.com",
+            "smtp_port": 587,
+            "from_email": "reports@company.com",
+            "to_email": "team@company.com",
+            "password": "your_password",
+        },
     )
-    
+
     # API Health Check - Every 5 minutes
-    scheduler.add_task(
-        name="health_check",
-        func=health_check,
-        every='5m',
-        timeout=30
-    )
-    
+    scheduler.add_task(name="health_check", func=health_check, every="5m", timeout=30)
+
     # Database Backup - Daily at 2 AM
     scheduler.add_task(
-        name="db_backup",
-        func=backup_database,
-        cron='0 2 * * *',
-        retries=3,
-        notify='email'
+        name="db_backup", func=backup_database, cron="0 2 * * *", retries=3, notify="email"
     )
-    
+
     print("=" * 70)
     print("AutoCron - Real-World Use Cases")
     print("=" * 70)
@@ -151,6 +124,6 @@ if __name__ == '__main__':
     print("\nPress Ctrl+C to stop")
     print("=" * 70)
     print()
-    
+
     # Start the scheduler
     scheduler.start(blocking=True)

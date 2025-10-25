@@ -8,7 +8,7 @@ from autocron import schedule, start_scheduler
 
 
 # Example 1: Schedule a function with interval
-@schedule(every='30s')
+@schedule(every="30s")
 def fetch_data():
     """Fetch data every 30 seconds."""
     print("Fetching data...")
@@ -16,7 +16,7 @@ def fetch_data():
 
 
 # Example 2: Schedule with cron expression
-@schedule(cron='0 9 * * *')
+@schedule(cron="0 9 * * *")
 def daily_report():
     """Generate daily report at 9 AM."""
     print("Generating daily report...")
@@ -24,7 +24,7 @@ def daily_report():
 
 
 # Example 3: Schedule with retries
-@schedule(every='5m', retries=3, retry_delay=60)
+@schedule(every="5m", retries=3, retry_delay=60)
 def api_sync():
     """Sync with API every 5 minutes with retries."""
     print("Syncing with API...")
@@ -33,10 +33,10 @@ def api_sync():
 
 # Example 4: Schedule with notifications
 @schedule(
-    every='1h',
-    notify='desktop',
+    every="1h",
+    notify="desktop",
     on_success=lambda: print("✓ Success!"),
-    on_failure=lambda e: print(f"✗ Failed: {e}")
+    on_failure=lambda e: print(f"✗ Failed: {e}"),
 )
 def cleanup_task():
     """Cleanup task with notifications."""
@@ -44,10 +44,10 @@ def cleanup_task():
     # Your cleanup logic here
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     print("Starting AutoCron scheduler...")
     print("Press Ctrl+C to stop")
     print()
-    
+
     # Start the scheduler (blocking)
     start_scheduler(blocking=True)

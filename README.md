@@ -34,6 +34,25 @@ For desktop notifications support:
 pip install autocron[notifications]
 ```
 
+### From Source / Development
+
+If you want to contribute or modify the code:
+
+```bash
+# Clone the repository
+git clone https://github.com/mdshoaibuddinchanda/autocron.git
+cd autocron
+
+# Install dependencies
+pip install -r requirements.txt
+
+# For development (includes testing, linting, etc.)
+pip install -r requirements-dev.txt
+
+# Install in editable mode
+pip install -e .
+```
+
 ## 🚀 Quick Start
 
 ### Schedule a Script

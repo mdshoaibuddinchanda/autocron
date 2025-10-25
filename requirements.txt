@@ -1,0 +1,37 @@
+# AutoCron Requirements
+# Core dependencies for running AutoCron
+
+# Scheduling
+croniter>=1.4.0
+python-crontab>=3.0.0; platform_system=='Linux' or platform_system=='Darwin'
+
+# Windows support
+pywin32>=305; platform_system=='Windows'
+
+# Utilities
+tqdm>=4.65.0
+psutil>=5.9.0
+pyyaml>=6.0
+
+# Optional: Notifications
+plyer>=2.1.0
+
+# Development dependencies (optional)
+# Uncomment below if you're contributing to development
+
+# Testing
+# pytest>=7.4.0
+# pytest-cov>=4.1.0
+# pytest-mock>=3.11.0
+# pytest-timeout>=2.1.0
+
+# Code quality
+# black>=23.7.0
+# flake8>=6.1.0
+# mypy>=1.5.0
+# isort>=5.12.0
+# pylint>=2.17.0
+
+# Security
+# bandit>=1.7.0
+# safety>=2.3.0

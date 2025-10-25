@@ -5,83 +5,78 @@ Provides platform-specific implementations for Windows, Linux, and macOS.
 """
 
 import os
-import subprocess
+import subprocess  # nosec B404 - Required for cross-platform task scheduling
 import tempfile
 import contextlib
 from abc import ABC, abstractmethod
 from typing import Optional, List
 from pathlib import Path
 
-from autocron.utils import (
-    is_windows,
-    is_linux,
-    is_macos,
-    sanitize_task_name,
-    get_platform_info
-)
+from autocron.utils import is_windows, is_linux, is_macos, sanitize_task_name, get_platform_info
 
 
 class OSAdapterError(Exception):
     """Exception raised when OS adapter operations fail."""
+
     pass
 
 
 class OSAdapter(ABC):
     """Abstract base class for OS-specific adapters."""
-    
+
     @abstractmethod
     def create_scheduled_task(
         self,
         task_name: str,
         script_path: str,
         cron_expr: str,
-        python_executable: Optional[str] = None
+        python_executable: Optional[str] = None,
     ) -> bool:
         """
         Create a scheduled task in the OS.
-        
+
         Args:
             task_name: Name of the task
             script_path: Path to the script to execute
             cron_expr: Cron expression for scheduling
             python_executable: Path to Python executable
-            
+
         Returns:
             True if successful, False otherwise
         """
         pass
-    
+
     @abstractmethod
     def remove_scheduled_task(self, task_name: str) -> bool:
         """
         Remove a scheduled task from the OS.
-        
+
         Args:
             task_name: Name of the task
-            
+
         Returns:
             True if successful, False otherwise
         """
         pass
-    
+
     @abstractmethod
     def list_scheduled_tasks(self) -> List[str]:
         """
         List all AutoCron scheduled tasks.
-        
+
         Returns:
             List of task names
         """
         pass
-    
+
     @abstractmethod
     def task_exists(self, task_name: str) -> bool:
         """
         Check if a task exists.
-        
+
         Args:
             task_name: Name of the task
-            
+
         Returns:
             True if exists, False otherwise
         """
@@ -91,28 +86,29 @@ class OSAdapter(ABC):
 class WindowsAdapter(OSAdapter):
     """
     Windows Task Scheduler adapter.
-    
+
     Uses Windows Task Scheduler via schtasks command.
     """
-    
+
     TASK_PREFIX = "AutoCron_"
-    
+
     def __init__(self):
         """Initialize Windows adapter."""
         if not is_windows():
             raise OSAdapterError("WindowsAdapter can only be used on Windows")
-    
+
     def create_scheduled_task(
         self,
         task_name: str,
         script_path: str,
         cron_expr: str,
-        python_executable: Optional[str] = None
+        python_executable: Optional[str] = None,
     ) -> bool:
         """Create Windows scheduled task."""
         try:
             if python_executable is None:
                 import sys
+
                 python_executable = sys.executable
 
             full_task_name = f"{self.TASK_PREFIX}{sanitize_task_name(task_name)}"
@@ -126,37 +122,34 @@ class WindowsAdapter(OSAdapter):
                 task_name=full_task_name,
                 script_path=script_path,
                 python_executable=python_executable,
-                cron_expr=cron_expr
+                cron_expr=cron_expr,
             )
 
             # Write XML to temp file
-            with tempfile.NamedTemporaryFile(mode='w', suffix='.xml', delete=False) as f:
+            with tempfile.NamedTemporaryFile(mode="w", suffix=".xml", delete=False) as f:
                 f.write(xml_content)
                 xml_file = f.name
 
             try:
                 # Create task using schtasks
                 cmd = [
-                    'schtasks',
-                    '/Create',
-                    '/TN', full_task_name,
-                    '/XML', xml_file,
-                    '/F'  # Force create, overwrite if exists
+                    "schtasks",
+                    "/Create",
+                    "/TN",
+                    full_task_name,
+                    "/XML",
+                    xml_file,
+                    "/F",  # Force create, overwrite if exists
                 ]
 
-                result = subprocess.run(
-                    cmd,
-                    capture_output=True,
-                    text=True,
-                    check=False
+                result = subprocess.run(  # nosec B603 B607 - Controlled schtasks command with validated inputs
+                    cmd, capture_output=True, text=True, check=False
                 )
 
                 if result.returncode == 0:
                     return True
                 else:
-                    raise OSAdapterError(
-                        f"Failed to create task: {result.stderr}"
-                    )
+                    raise OSAdapterError(f"Failed to create task: {result.stderr}")
             finally:
                 # Clean up temp XML file
                 with contextlib.suppress(OSError):
@@ -164,68 +157,58 @@ class WindowsAdapter(OSAdapter):
 
         except Exception as e:
             raise OSAdapterError(f"Failed to create scheduled task: {e}") from e
-    
+
     def remove_scheduled_task(self, task_name: str) -> bool:
         """Remove Windows scheduled task."""
         try:
             full_task_name = f"{self.TASK_PREFIX}{sanitize_task_name(task_name)}"
-            
-            cmd = ['schtasks', '/Delete', '/TN', full_task_name, '/F']
-            result = subprocess.run(
-                cmd,
-                capture_output=True,
-                text=True,
-                check=False
+
+            cmd = ["schtasks", "/Delete", "/TN", full_task_name, "/F"]
+            result = subprocess.run(  # nosec B603 B607 - Controlled schtasks command with validated task name
+                cmd, capture_output=True, text=True, check=False
             )
-            
+
             return result.returncode == 0
         except Exception:
             return False
-    
+
     def list_scheduled_tasks(self) -> List[str]:
         """List all AutoCron scheduled tasks."""
         try:
-            cmd = ['schtasks', '/Query', '/FO', 'LIST']
-            result = subprocess.run(
-                cmd,
-                capture_output=True,
-                text=True,
-                check=False
+            cmd = ["schtasks", "/Query", "/FO", "LIST"]
+            result = subprocess.run(  # nosec B603 B607 - Controlled schtasks query command
+                cmd, capture_output=True, text=True, check=False
             )
-            
+
             if result.returncode != 0:
                 return []
-            
+
             tasks = []
-            for line in result.stdout.split('\n'):
-                if self.TASK_PREFIX in line and 'TaskName' in line:
+            for line in result.stdout.split("\n"):
+                if self.TASK_PREFIX in line and "TaskName" in line:
                     # Extract task name
-                    parts = line.split(':')
+                    parts = line.split(":")
                     if len(parts) > 1:
                         task_name = parts[1].strip()
                         if task_name.startswith(self.TASK_PREFIX):
                             # Remove prefix to get original name
-                            original_name = task_name[len(self.TASK_PREFIX):]
+                            original_name = task_name[len(self.TASK_PREFIX) :]
                             tasks.append(original_name)
-            
+
             return tasks
         except Exception:
             return []
-    
+
     def task_exists(self, task_name: str) -> bool:
         """Check if task exists."""
         tasks = self.list_scheduled_tasks()
         return task_name in tasks
-    
+
     def _generate_task_xml(
-        self,
-        task_name: str,
-        script_path: str,
-        python_executable: str,
-        cron_expr: str
+        self, task_name: str, script_path: str, python_executable: str, cron_expr: str
     ) -> str:
         """Generate Task Scheduler XML configuration."""
-        return f'''<?xml version="1.0" encoding="UTF-16"?>
+        return f"""<?xml version="1.0" encoding="UTF-16"?>
 <Task version="1.2" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">
   <RegistrationInfo>
     <Description>AutoCron scheduled task: {task_name}</Description>
@@ -271,128 +254,118 @@ class WindowsAdapter(OSAdapter):
       <Arguments>"{script_path}"</Arguments>
     </Exec>
   </Actions>
-</Task>'''
+</Task>"""
 
 
 class UnixAdapter(OSAdapter):
     """
     Unix (Linux/macOS) cron adapter.
-    
+
     Uses system crontab to schedule tasks.
     """
-    
+
     CRON_COMMENT = "# AutoCron:"
-    
+
     def __init__(self):
         """Initialize Unix adapter."""
         if not (is_linux() or is_macos()):
             raise OSAdapterError("UnixAdapter can only be used on Linux or macOS")
-    
+
     def create_scheduled_task(
         self,
         task_name: str,
         script_path: str,
         cron_expr: str,
-        python_executable: Optional[str] = None
+        python_executable: Optional[str] = None,
     ) -> bool:
         """Create cron job."""
         try:
             if python_executable is None:
                 import sys
+
                 python_executable = sys.executable
-            
+
             # Remove existing task if it exists
             self.remove_scheduled_task(task_name)
-            
+
             # Get current crontab
-            result = subprocess.run(
-                ['crontab', '-l'],
-                capture_output=True,
-                text=True,
-                check=False
+            result = (
+                subprocess.run(  # nosec B603 B607 - Controlled crontab command with no user input
+                    ["crontab", "-l"], capture_output=True, text=True, check=False
+                )
             )
-            
+
             current_cron = result.stdout if result.returncode == 0 else ""
-            
+
             # Add new job
             comment = f"{self.CRON_COMMENT} {task_name}"
             job_line = f'{cron_expr} {python_executable} "{script_path}" {comment}'
-            
-            new_cron = f'{current_cron.rstrip()}\n{job_line}\n'
-            
+
+            new_cron = f"{current_cron.rstrip()}\n{job_line}\n"
+
             # Write new crontab
-            result = subprocess.run(
-                ['crontab', '-'],
-                input=new_cron,
-                capture_output=True,
-                text=True,
-                check=False
+            result = (
+                subprocess.run(  # nosec B603 B607 - Controlled crontab write with validated input
+                    ["crontab", "-"], input=new_cron, capture_output=True, text=True, check=False
+                )
             )
-            
+
             return result.returncode == 0
         except Exception as e:
             raise OSAdapterError(f"Failed to create cron job: {e}") from e
-    
+
     def remove_scheduled_task(self, task_name: str) -> bool:
         """Remove cron job."""
         try:
             # Get current crontab
-            result = subprocess.run(
-                ['crontab', '-l'],
-                capture_output=True,
-                text=True,
-                check=False
+            result = subprocess.run(  # nosec B603 B607 - Controlled crontab read command
+                ["crontab", "-l"], capture_output=True, text=True, check=False
             )
-            
+
             if result.returncode != 0:
                 return False
-            
+
             current_cron = result.stdout
             comment = f"{self.CRON_COMMENT} {task_name}"
-            
+
             # Filter out the task
-            new_lines = [line for line in current_cron.split('\n') if comment not in line]
-            new_cron = '\n'.join(new_lines)
-            
+            new_lines = [line for line in current_cron.split("\n") if comment not in line]
+            new_cron = "\n".join(new_lines)
+
             # Write new crontab
-            result = subprocess.run(
-                ['crontab', '-'],
-                input=new_cron,
-                capture_output=True,
-                text=True,
-                check=False
+            result = (
+                subprocess.run(  # nosec B603 B607 - Controlled crontab delete with validated input
+                    ["crontab", "-"], input=new_cron, capture_output=True, text=True, check=False
+                )
             )
-            
+
             return result.returncode == 0
         except Exception:
             return False
-    
+
     def list_scheduled_tasks(self) -> List[str]:
         """List all AutoCron cron jobs."""
         try:
-            result = subprocess.run(
-                ['crontab', '-l'],
-                capture_output=True,
-                text=True,
-                check=False
+            result = subprocess.run(  # nosec B603 B607 - Controlled crontab list command
+                ["crontab", "-l"], capture_output=True, text=True, check=False
             )
-            
+
             if result.returncode != 0:
                 return []
-            
+
             tasks = []
-            for line in result.stdout.split('\n'):
+            for line in result.stdout.split("\n"):
                 if self.CRON_COMMENT in line:
                     # Extract task name from comment
                     parts = line.split(self.CRON_COMMENT)
                     if len(parts) > 1:
                         task_name = parts[1].strip()
                         tasks.append(task_name)
-            
+
             return tasks
         except Exception:
             return []
-    
+
     def task_exists(self, task_name: str) -> bool:
         """Check if task exists."""
         tasks = self.list_scheduled_tasks()
@@ -402,10 +375,10 @@ class UnixAdapter(OSAdapter):
 def get_os_adapter() -> OSAdapter:
     """
     Get appropriate OS adapter for current platform.
-    
+
     Returns:
         OS adapter instance
-        
+
     Raises:
         OSAdapterError: If platform is not supported
     """

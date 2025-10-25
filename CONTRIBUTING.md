@@ -29,6 +29,11 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 3. **Install dependencies**
 
 ```bash
+# Using requirements file (recommended)
+pip install -r requirements-dev.txt
+pip install -e .
+
+# Or using setup.py extras
 pip install -e .[dev,notifications]
 ```
 

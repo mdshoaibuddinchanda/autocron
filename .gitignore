@@ -136,3 +136,4 @@ Thumbs.db
 # AutoCron specific
 autocron_logs/
 *.autocron.lock
+bandit-report.json
