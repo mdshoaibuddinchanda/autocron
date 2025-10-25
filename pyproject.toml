@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "autocron"
-version = "1.0.0"
+version = "1.0.1"
 description = "Automate scripts with zero setup. Run Python tasks anytime, anywhere."
 readme = "README.md"
 authors = [
