@@ -202,13 +202,13 @@ jobs:
           name: dist-${{ github.sha }}
 
       - name: Publish to Test PyPI
-        if: ${{ secrets.TEST_PYPI_API_TOKEN != '' }}
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           repository_url: https://test.pypi.org/legacy/
           username: __token__
           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
           skip-existing: true
+        continue-on-error: true
 
 # -------------------------
 # JOB: PUBLISH TO REAL PYPI
@@ -233,8 +233,8 @@ jobs:
           name: dist-${{ github.sha }}
 
       - name: Publish to PyPI
-        if: ${{ secrets.PYPI_API_TOKEN != '' }}
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}
           skip-existing: true
+        continue-on-error: true
