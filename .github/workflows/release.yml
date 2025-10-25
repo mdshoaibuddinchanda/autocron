@@ -15,27 +15,23 @@ jobs:
       with:
         fetch-depth: 0
     
-    - name: Generate changelog
-      id: changelog
-      uses: metcalfc/changelog-generator@v4.3.1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    
     - name: Create Release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: softprops/action-gh-release@v1
       with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
+        token: ${{ secrets.GITHUB_TOKEN }}
+        name: Release ${{ github.ref_name }}
         body: |
-          ## Changes in this Release
-          ${{ steps.changelog.outputs.changelog }}
+          ## AutoCron ${{ github.ref_name }}
           
-          ## Installation
+          Cross-platform task scheduler for Python with zero-setup automation.
+          
+          ### Installation
           ```bash
           pip install autocron==${{ github.ref_name }}
           ```
+          
+          ### What's New
+          See the [full changelog](https://github.com/mdshoaibuddinchanda/autocron/compare/v1.0.0...${{ github.ref_name }})
         draft: false
         prerelease: false
 
