@@ -1,9 +1,11 @@
 """Integration tests for AutoCron."""
 
-import pytest
-import time
-import tempfile
 import os
+import tempfile
+import time
+
+import pytest
+
 from autocron import AutoCron, schedule
 
 

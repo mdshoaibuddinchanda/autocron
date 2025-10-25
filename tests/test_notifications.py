@@ -1,10 +1,11 @@
 """Tests for notification functionality."""
 
 import pytest
+
 from autocron.notifications import (
-    NotificationManager,
     EmailNotifier,
     NotificationError,
+    NotificationManager,
     get_notification_manager,
     reset_notification_manager,
 )

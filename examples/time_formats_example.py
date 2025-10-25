@@ -6,7 +6,6 @@ Demonstrates all supported time format styles.
 
 from autocron import schedule, start_scheduler
 
-
 # ============================================================================
 # INTERVAL-BASED SCHEDULING (Simple)
 # ============================================================================

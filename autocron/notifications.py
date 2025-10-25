@@ -6,10 +6,11 @@ Supports desktop notifications and email alerts for task events.
 
 import contextlib
 import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from typing import Optional, Dict, Any
 from abc import ABC, abstractmethod
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from typing import Any, Dict, Optional
+
 from autocron.utils import safe_import
 
 

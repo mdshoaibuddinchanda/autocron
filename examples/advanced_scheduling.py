@@ -4,8 +4,9 @@ Advanced scheduling example using AutoCron class.
 This example shows advanced features and configuration options.
 """
 
-from autocron import AutoCron
 import time
+
+from autocron import AutoCron
 
 
 def data_processor():

@@ -5,11 +5,11 @@ This module provides helper functions for time parsing, validation,
 and general utilities used throughout the library.
 """
 
+import platform
 import re
+import sys
 from datetime import datetime, timedelta
 from typing import Optional, Union
-import platform
-import sys
 
 
 class TimeParseError(Exception):

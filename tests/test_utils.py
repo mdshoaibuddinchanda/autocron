@@ -1,19 +1,21 @@
 """Tests for utility functions."""
 
+from datetime import datetime, timedelta
+
 import pytest
-from datetime import timedelta, datetime
+
 from autocron.utils import (
-    parse_interval,
-    validate_cron_expression,
+    TimeParseError,
+    calculate_retry_delay,
+    format_timedelta,
+    get_next_run_time,
     get_platform_info,
-    is_windows,
     is_linux,
     is_macos,
-    format_timedelta,
+    is_windows,
+    parse_interval,
     sanitize_task_name,
-    get_next_run_time,
-    calculate_retry_delay,
-    TimeParseError,
+    validate_cron_expression,
 )
 
 

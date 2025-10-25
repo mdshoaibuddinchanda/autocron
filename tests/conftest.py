@@ -1,11 +1,12 @@
 """Pytest configuration and fixtures."""
 
 import contextlib
-import pytest
 import os
 import sys
 import tempfile
 from pathlib import Path
+
+import pytest
 
 
 def pytest_configure(config):

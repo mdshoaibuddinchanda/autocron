@@ -7,6 +7,7 @@ Provides CLI commands for managing scheduled tasks.
 import argparse
 import sys
 from typing import Optional
+
 from autocron import AutoCron, __version__
 from autocron.logger import get_logger
 

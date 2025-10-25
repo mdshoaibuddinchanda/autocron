@@ -4,15 +4,15 @@ OS-specific adapters for task scheduling.
 Provides platform-specific implementations for Windows, Linux, and macOS.
 """
 
+import contextlib
 import os
 import subprocess  # nosec B404 - Required for cross-platform task scheduling
 import tempfile
-import contextlib
 from abc import ABC, abstractmethod
-from typing import Optional, List
 from pathlib import Path
+from typing import List, Optional
 
-from autocron.utils import is_windows, is_linux, is_macos, sanitize_task_name, get_platform_info
+from autocron.utils import get_platform_info, is_linux, is_macos, is_windows, sanitize_task_name
 
 
 class OSAdapterError(Exception):

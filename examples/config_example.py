@@ -4,8 +4,9 @@ Example using configuration file.
 This example shows how to configure AutoCron using a YAML file.
 """
 
-from autocron import AutoCron
 import sys
+
+from autocron import AutoCron
 
 
 def main():

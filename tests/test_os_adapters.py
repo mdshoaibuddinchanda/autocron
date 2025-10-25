@@ -1,9 +1,11 @@
 """Tests for OS adapters."""
 
-import pytest
 import platform
-from autocron.os_adapters import get_os_adapter, WindowsAdapter, UnixAdapter, OSAdapterError
-from autocron.utils import is_windows, is_linux, is_macos
+
+import pytest
+
+from autocron.os_adapters import OSAdapterError, UnixAdapter, WindowsAdapter, get_os_adapter
+from autocron.utils import is_linux, is_macos, is_windows
 
 
 class TestGetOSAdapter:

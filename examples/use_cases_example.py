@@ -4,9 +4,11 @@ Real-World Use Cases.
 Practical examples for common automation scenarios.
 """
 
-from autocron import AutoCron
-import requests
 from datetime import datetime
+
+import requests
+
+from autocron import AutoCron
 
 
 # Data Pipeline Automation
