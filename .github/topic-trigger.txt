@@ -1,6 +1,0 @@
-Trigger file to kick the "Set repository topics" workflow.
-Date: 2025-10-26
-
-This tiny file is committed only to produce a push event that runs
-the `.github/workflows/set-topics.yml` workflow which will set the
-repository topics: scheduler, cron, automation, python-library, utilities.
