@@ -1,0 +1,32 @@
+name: Set repository topics
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  set-topics:
+    name: Set repository topics
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set topics via GitHub Script
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const topics = [
+              "scheduler",
+              "cron",
+              "automation",
+              "python-library",
+              "utilities",
+            ];
+            // Replace all topics for the repository
+            await github.repos.replaceAllTopics({ owner, repo, names: topics });
+            console.log(`Set topics: ${topics.join(', ')}`);
