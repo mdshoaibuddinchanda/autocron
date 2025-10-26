@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "autocron-scheduler"
-version = "1.0.1"
+version = "1.0.2"
 description = "Automate scripts with zero setup. Run Python tasks anytime, anywhere."
 readme = "README.md"
 authors = [
