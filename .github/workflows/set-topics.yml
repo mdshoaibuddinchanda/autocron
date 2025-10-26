@@ -27,6 +27,6 @@ jobs:
               "python-library",
               "utilities",
             ];
-            // Replace all topics for the repository
-            await github.repos.replaceAllTopics({ owner, repo, names: topics });
+            // Replace all topics for the repository using the correct REST API method
+            await github.rest.repos.replaceAllTopics({ owner, repo, names: topics });
             console.log(`Set topics: ${topics.join(', ')}`);
