@@ -6,24 +6,24 @@ A cross-platform Python library for scheduling tasks with minimal configuration.
 
 from autocron.scheduler import (
     AutoCron,
-    schedule,
-    start_scheduler,
-    get_global_scheduler,
-    reset_global_scheduler,
+    SchedulingError,
     Task,
     TaskExecutionError,
-    SchedulingError,
+    get_global_scheduler,
+    reset_global_scheduler,
+    schedule,
+    start_scheduler,
 )
 from autocron.version import __version__
 
 __all__ = [
     "AutoCron",
-    "schedule",
-    "start_scheduler",
-    "get_global_scheduler",
-    "reset_global_scheduler",
+    "SchedulingError",
     "Task",
     "TaskExecutionError",
-    "SchedulingError",
     "__version__",
+    "get_global_scheduler",
+    "reset_global_scheduler",
+    "schedule",
+    "start_scheduler",
 ]
