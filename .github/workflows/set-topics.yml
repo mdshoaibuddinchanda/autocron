@@ -16,7 +16,7 @@ jobs:
       - name: Set topics via GitHub Script
         uses: actions/github-script@v6
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.PAT_TOKEN }}
           script: |
             const owner = context.repo.owner;
             const repo = context.repo.repo;
