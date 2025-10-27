@@ -32,19 +32,23 @@ def example_save_tasks():
 
     # Backup script
     backup_script = scripts_dir / "backup.py"
-    backup_script.write_text("""
+    backup_script.write_text(
+        """
 import datetime
 print(f"Running backup at {datetime.datetime.now()}")
 # Your backup logic here
-""")
+"""
+    )
 
     # Cleanup script
     cleanup_script = scripts_dir / "cleanup.py"
-    cleanup_script.write_text("""
+    cleanup_script.write_text(
+        """
 import datetime
 print(f"Running cleanup at {datetime.datetime.now()}")
 # Your cleanup logic here
-""")
+"""
+    )
 
     # Add tasks
     scheduler.add_task(
@@ -124,8 +128,8 @@ def example_merge_vs_replace():
         _extracted_from_example_merge_vs_replace_19(
             scheduler,
             False,
-            'After merge load: ',
-            ' loaded, existing tasks preserved)',
+            "After merge load: ",
+            " loaded, existing tasks preserved)",
         )
     except Exception:
         print("No saved tasks to load")
@@ -139,8 +143,8 @@ def example_merge_vs_replace():
         _extracted_from_example_merge_vs_replace_19(
             new_scheduler,
             True,
-            'After replace load: ',
-            ' loaded, existing tasks cleared)',
+            "After replace load: ",
+            " loaded, existing tasks cleared)",
         )
     except Exception:
         print("No saved tasks to load")
@@ -215,11 +219,13 @@ def example_persistence_workflow():
     scripts_dir.mkdir(exist_ok=True)
 
     monitor_script = scripts_dir / "monitor.py"
-    monitor_script.write_text("""
+    monitor_script.write_text(
+        """
 import requests
 print("Monitoring service health...")
 # Check your services here
-""")
+"""
+    )
 
     scheduler.add_task(
         name="health_monitor",

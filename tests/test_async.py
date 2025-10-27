@@ -32,6 +32,7 @@ class TestAsyncTasks:
 
         # Start scheduler in background
         import threading
+
         def run_scheduler():
             scheduler.start(blocking=False)
             time.sleep(2)
@@ -55,12 +56,13 @@ class TestAsyncTasks:
 
         # Execute directly
         ret = scheduler._execute_function(async_func, timeout=5)
-        
+
         assert ret == "success"
         assert result == ["done"]
 
     def test_async_function_timeout(self, scheduler):
         """Test async function with timeout."""
+
         async def slow_async_func():
             await asyncio.sleep(10)
             return "should not reach"
@@ -70,6 +72,7 @@ class TestAsyncTasks:
 
     def test_async_function_error(self, scheduler):
         """Test async function that raises error."""
+
         async def failing_async_func():
             await asyncio.sleep(0.05)
             raise ValueError("Async task failed")
@@ -110,18 +113,14 @@ class TestAsyncTasks:
         async def flaky_async_task():
             await asyncio.sleep(0.05)
             attempts.append(1)
-# sourcery skip: no-conditionals-in-tests
+            # sourcery skip: no-conditionals-in-tests
             if len(attempts) < 2:
                 raise ValueError("First attempt fails")
             return "success"
 
         # Add task with retries
         scheduler.add_task(
-            name="flaky_task",
-            func=flaky_async_task,
-            every="1s",
-            retries=2,
-            retry_delay=1
+            name="flaky_task", func=flaky_async_task, every="1s", retries=2, retry_delay=1
         )
 
         # Start scheduler
@@ -153,7 +152,7 @@ class TestAsyncTasks:
             func=async_task,
             every="1s",
             on_success=on_success,
-            on_failure=on_failure
+            on_failure=on_failure,
         )
 
         # Start scheduler
@@ -178,11 +177,7 @@ class TestAsyncTasks:
 
         # Add task with failure callback
         scheduler.add_task(
-            name="failing_task",
-            func=failing_task,
-            every="1s",
-            retries=0,
-            on_failure=on_failure
+            name="failing_task", func=failing_task, every="1s", retries=0, on_failure=on_failure
         )
 
         # Start scheduler
@@ -204,7 +199,7 @@ class TestAsyncTasks:
 
         # Execute without timeout
         scheduler._execute_function(async_task, timeout=None)
-        
+
         assert result == ["done"]
 
     def test_async_with_asyncio_operations(self, scheduler):
@@ -215,21 +210,18 @@ class TestAsyncTasks:
             # Multiple async operations
             await asyncio.sleep(0.05)
             results.append("step1")
-            
+
             await asyncio.sleep(0.05)
             results.append("step2")
-            
+
             # Concurrent operations
-            await asyncio.gather(
-                asyncio.sleep(0.05),
-                asyncio.sleep(0.05)
-            )
+            await asyncio.gather(asyncio.sleep(0.05), asyncio.sleep(0.05))
             results.append("step3")
-            
+
             return "complete"
 
         ret = scheduler._execute_function(complex_async_task, timeout=5)
-        
+
         assert ret == "complete"
         assert results == ["step1", "step2", "step3"]
 
@@ -243,12 +235,13 @@ class TestAsyncTasks:
             return "sync_result"
 
         ret = scheduler._execute_function(sync_func, timeout=5)
-        
+
         assert ret == "sync_result"
         assert result == ["sync"]
 
     def test_sync_function_timeout(self, scheduler):
         """Test sync function timeout still works."""
+
         def slow_sync_func():
             time.sleep(10)
             return "should not reach"

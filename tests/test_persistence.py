@@ -40,7 +40,7 @@ class TestTaskPersistence:
         assert save_path.exists()
 
         # Verify YAML content
-        with open(save_path, 'r') as f:
+        with open(save_path, "r") as f:
             data = yaml.safe_load(f)
 
         assert "version" in data
@@ -73,7 +73,7 @@ class TestTaskPersistence:
         assert save_path.exists()
 
         # Verify JSON content
-        with open(save_path, 'r') as f:
+        with open(save_path, "r") as f:
             data = json.load(f)
 
         assert "version" in data
@@ -108,14 +108,14 @@ class TestTaskPersistence:
         scheduler.add_task(name="func_task", func=my_func, every="10m")
 
         # Save tasks
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
             temp_path = f.name
 
         try:
             scheduler.save_tasks(temp_path)
 
             # Verify only script task was saved
-            with open(temp_path, 'r') as f:
+            with open(temp_path, "r") as f:
                 data = yaml.safe_load(f)
 
             assert len(data["tasks"]) == 1
@@ -155,11 +155,11 @@ class TestTaskPersistence:
                     "run_count": 0,
                     "fail_count": 0,
                 }
-            ]
+            ],
         }
 
         load_path = tmp_path / "tasks.yaml"
-        with open(load_path, 'w') as f:
+        with open(load_path, "w") as f:
             yaml.dump(tasks_data, f)
 
         # Load tasks
@@ -200,11 +200,11 @@ class TestTaskPersistence:
                     "run_count": 0,
                     "fail_count": 0,
                 }
-            ]
+            ],
         }
 
         load_path = tmp_path / "tasks.json"
-        with open(load_path, 'w') as f:
+        with open(load_path, "w") as f:
             json.dump(tasks_data, f)
 
         # Load tasks
@@ -239,11 +239,11 @@ class TestTaskPersistence:
                     "run_count": 10,
                     "fail_count": 2,
                 }
-            ]
+            ],
         }
 
         load_path = tmp_path / "tasks.yaml"
-        with open(load_path, 'w') as f:
+        with open(load_path, "w") as f:
             yaml.dump(tasks_data, f)
 
         # Load tasks
@@ -282,11 +282,11 @@ class TestTaskPersistence:
                     "run_count": 0,
                     "fail_count": 0,
                 }
-            ]
+            ],
         }
 
         load_path = tmp_path / "tasks.yaml"
-        with open(load_path, 'w') as f:
+        with open(load_path, "w") as f:
             yaml.dump(tasks_data, f)
 
         # Load tasks (merge mode)
@@ -325,11 +325,11 @@ class TestTaskPersistence:
                     "run_count": 0,
                     "fail_count": 0,
                 }
-            ]
+            ],
         }
 
         load_path = tmp_path / "tasks.yaml"
-        with open(load_path, 'w') as f:
+        with open(load_path, "w") as f:
             yaml.dump(tasks_data, f)
 
         # Load tasks (replace mode)
@@ -368,11 +368,11 @@ class TestTaskPersistence:
                     "run_count": 0,
                     "fail_count": 0,
                 }
-            ]
+            ],
         }
 
         load_path = tmp_path / "tasks.yaml"
-        with open(load_path, 'w') as f:
+        with open(load_path, "w") as f:
             yaml.dump(tasks_data, f)
 
         # Load tasks (merge mode)
@@ -390,7 +390,7 @@ class TestTaskPersistence:
         """Test loading tasks with invalid format."""
         # Create invalid file
         load_path = tmp_path / "invalid.yaml"
-        with open(load_path, 'w') as f:
+        with open(load_path, "w") as f:
             yaml.dump({"invalid": "data"}, f)
 
         with pytest.raises(SchedulingError, match="Invalid task file format"):
@@ -401,7 +401,7 @@ class TestTaskPersistence:
         # Create a file with unsupported extension
         load_path = tmp_path / "tasks.txt"
         load_path.write_text("some content")
-        
+
         with pytest.raises(SchedulingError, match="Unsupported file format"):
             scheduler.load_tasks(str(load_path))
 

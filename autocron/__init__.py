@@ -19,6 +19,7 @@ from autocron.version import __version__
 # Optional dashboard imports
 try:
     from autocron.dashboard import Dashboard, TaskAnalytics, live_monitor, show_dashboard, show_task
+
     _dashboard_available = True
 except ImportError:
     _dashboard_available = False

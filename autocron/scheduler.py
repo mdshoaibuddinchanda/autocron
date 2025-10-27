@@ -32,6 +32,7 @@ from autocron.utils import (
 # Optional analytics import
 try:
     from autocron.dashboard import TaskAnalytics
+
     ANALYTICS_AVAILABLE = True
 except ImportError:
     ANALYTICS_AVAILABLE = False
@@ -137,7 +138,7 @@ class Task:
         self.on_success = on_success
         self.on_failure = on_failure
         self.enabled = True
-        
+
         # Safe mode configuration
         self.safe_mode = safe_mode
         self.max_memory_mb = max_memory_mb
@@ -203,7 +204,7 @@ class Task:
     def to_dict(self) -> Dict[str, Any]:
         """
         Convert task to dictionary for serialization.
-        
+
         Returns:
             Dictionary containing task configuration and state
         """
@@ -232,13 +233,13 @@ class Task:
     def from_dict(cls, data: Dict[str, Any]) -> "Task":
         """
         Create task from dictionary.
-        
+
         Args:
             data: Dictionary containing task configuration
-            
+
         Returns:
             Task instance
-            
+
         Raises:
             ValueError: If task data is invalid or func-based task
         """
@@ -247,7 +248,7 @@ class Task:
                 "Only script-based tasks can be loaded from persistence. "
                 "Function-based tasks must be registered programmatically."
             )
-        
+
         # Create task with schedule
         task = cls(
             name=data["name"],
@@ -263,18 +264,18 @@ class Task:
             max_memory_mb=data.get("max_memory_mb"),
             max_cpu_percent=data.get("max_cpu_percent"),
         )
-        
+
         # Restore state
         task.task_id = data.get("task_id", str(uuid.uuid4()))
         task.enabled = data.get("enabled", True)
         task.run_count = data.get("run_count", 0)
         task.fail_count = data.get("fail_count", 0)
-        
+
         if data.get("last_run"):
             task.last_run = datetime.fromisoformat(data["last_run"])
         if data.get("next_run"):
             task.next_run = datetime.fromisoformat(data["next_run"])
-        
+
         return task
 
 
@@ -310,7 +311,7 @@ class AutoCron:
         self._thread: Optional[threading.Thread] = None
         self._executor_threads: List[threading.Thread] = []
         self._lock = threading.Lock()
-        
+
         # Analytics tracking (optional)
         self.analytics = None
         if ANALYTICS_AVAILABLE:
@@ -485,20 +486,20 @@ class AutoCron:
     def save_tasks(self, path: Optional[str] = None) -> str:
         """
         Save all tasks to a file for persistence.
-        
+
         Only script-based tasks can be saved. Function-based tasks must be
         registered programmatically on each startup.
-        
+
         Args:
             path: Path to save file (YAML or JSON based on extension).
                   Defaults to ~/.autocron/tasks.yaml
-        
+
         Returns:
             Path where tasks were saved
-            
+
         Raises:
             SchedulingError: If save fails
-            
+
         Examples:
             scheduler.save_tasks()  # Save to default location
             scheduler.save_tasks("my_tasks.yaml")  # Save to custom location
@@ -531,25 +532,34 @@ class AutoCron:
                 )
 
             # Save based on file extension
-            if path_obj.suffix.lower() in {'.yaml', '.yml'}:
+            if path_obj.suffix.lower() in {".yaml", ".yml"}:
                 import yaml
-                with open(path, 'w') as f:
-                    yaml.dump({
-                        "version": "1.0",
-                        "saved_at": datetime.now().isoformat(),
-                        "tasks": tasks_data
-                    }, f, default_flow_style=False, sort_keys=False)
-            elif path_obj.suffix.lower() == '.json':
-                with open(path, 'w') as f:
-                    json.dump({
-                        "version": "1.0",
-                        "saved_at": datetime.now().isoformat(),
-                        "tasks": tasks_data
-                    }, f, indent=2)
+
+                with open(path, "w") as f:
+                    yaml.dump(
+                        {
+                            "version": "1.0",
+                            "saved_at": datetime.now().isoformat(),
+                            "tasks": tasks_data,
+                        },
+                        f,
+                        default_flow_style=False,
+                        sort_keys=False,
+                    )
+            elif path_obj.suffix.lower() == ".json":
+                with open(path, "w") as f:
+                    json.dump(
+                        {
+                            "version": "1.0",
+                            "saved_at": datetime.now().isoformat(),
+                            "tasks": tasks_data,
+                        },
+                        f,
+                        indent=2,
+                    )
             else:
                 raise SchedulingError(
-                    f"Unsupported file format: {path_obj.suffix}. "
-                    "Use .yaml, .yml, or .json"
+                    f"Unsupported file format: {path_obj.suffix}. " "Use .yaml, .yml, or .json"
                 )
 
             self.logger.info(f"Saved {len(tasks_data)} tasks to {path}")
@@ -561,19 +571,19 @@ class AutoCron:
     def load_tasks(self, path: Optional[str] = None, replace: bool = False) -> int:
         """
         Load tasks from a persistence file.
-        
+
         Args:
             path: Path to load file (YAML or JSON based on extension).
                   Defaults to ~/.autocron/tasks.yaml
             replace: If True, remove all existing tasks before loading.
                      If False (default), merge with existing tasks.
-        
+
         Returns:
             Number of tasks loaded
-            
+
         Raises:
             SchedulingError: If load fails
-            
+
         Examples:
             scheduler.load_tasks()  # Load from default location
             scheduler.load_tasks("my_tasks.yaml")  # Load from custom location
@@ -591,17 +601,17 @@ class AutoCron:
                 raise SchedulingError(f"Task file not found: {path}")
 
             # Load based on file extension
-            if path_obj.suffix.lower() in {'.yaml', '.yml'}:
+            if path_obj.suffix.lower() in {".yaml", ".yml"}:
                 import yaml
-                with open(path, 'r') as f:
+
+                with open(path, "r") as f:
                     data = yaml.safe_load(f)
-            elif path_obj.suffix.lower() == '.json':
-                with open(path, 'r') as f:
+            elif path_obj.suffix.lower() == ".json":
+                with open(path, "r") as f:
                     data = json.load(f)
             else:
                 raise SchedulingError(
-                    f"Unsupported file format: {path_obj.suffix}. "
-                    "Use .yaml, .yml, or .json"
+                    f"Unsupported file format: {path_obj.suffix}. " "Use .yaml, .yml, or .json"
                 )
 
             # Validate structure
@@ -625,9 +635,7 @@ class AutoCron:
                     # Check for duplicate names
                     existing_task = self.get_task(name=task.name)
                     if existing_task and not replace:
-                        self.logger.warning(
-                            f"Task '{task.name}' already exists, skipping"
-                        )
+                        self.logger.warning(f"Task '{task.name}' already exists, skipping")
                         skipped_count += 1
                         continue
 
@@ -640,8 +648,7 @@ class AutoCron:
                     skipped_count += 1
 
             self.logger.info(
-                f"Loaded {loaded_count} tasks from {path} "
-                f"(skipped {skipped_count})"
+                f"Loaded {loaded_count} tasks from {path} " f"(skipped {skipped_count})"
             )
             return loaded_count
 
@@ -737,17 +744,12 @@ class AutoCron:
                 # Execute task
                 if task.func:
                     self._execute_function(task.func, task.timeout)
+                elif task.safe_mode:
+                    self._execute_in_safe_mode(
+                        task.script, task.timeout, task.max_memory_mb, task.max_cpu_percent
+                    )
                 else:
-                    # Check if safe mode is enabled
-                    if task.safe_mode:
-                        self._execute_in_safe_mode(
-                            task.script, 
-                            task.timeout,
-                            task.max_memory_mb,
-                            task.max_cpu_percent
-                        )
-                    else:
-                        self._execute_script(task.script, task.timeout)
+                    self._execute_script(task.script, task.timeout)
 
                 duration = time.time() - start_time
                 final_duration = duration
@@ -814,7 +816,7 @@ class AutoCron:
                                 success=False,
                                 duration=final_duration,
                                 error=final_error,
-                                retry_count=final_attempt + 1
+                                retry_count=final_attempt + 1,
                             )
                     return
 
@@ -828,7 +830,7 @@ class AutoCron:
         # Check if function is async
         if inspect.iscoroutinefunction(func):
             return self._execute_async_function(func, timeout)
-        
+
         # Sync function execution
         if timeout is None:
             return func()
@@ -863,9 +865,7 @@ class AutoCron:
                 loop = asyncio.get_running_loop()
                 # We're in an async context, use the existing loop
                 if timeout:
-                    return loop.run_until_complete(
-                        asyncio.wait_for(func(), timeout=timeout)
-                    )
+                    return loop.run_until_complete(asyncio.wait_for(func(), timeout=timeout))
                 else:
                     return loop.run_until_complete(func())
             except RuntimeError:
@@ -875,9 +875,7 @@ class AutoCron:
                 else:
                     return asyncio.run(func())
         except asyncio.TimeoutError as e:
-            raise TaskExecutionError(
-                f"Async task timed out after {timeout} seconds"
-            ) from e
+            raise TaskExecutionError(f"Async task timed out after {timeout} seconds") from e
 
     def _execute_script(self, script: str, timeout: Optional[int]) -> Any:
         """Execute a script with timeout."""
@@ -899,31 +897,31 @@ class AutoCron:
             ) from e
 
     def _execute_in_safe_mode(
-        self, 
-        script: str, 
+        self,
+        script: str,
         timeout: Optional[int],
         max_memory_mb: Optional[int],
-        max_cpu_percent: Optional[int]
+        max_cpu_percent: Optional[int],
     ) -> Any:
         """
         Execute a script in safe mode with resource limits and isolation.
-        
+
         Safe mode features:
         - Subprocess isolation (no access to parent process)
         - Resource limits (memory, CPU) on Unix/Linux/Mac
         - Timeout enforcement
         - Output sanitization
         - Error containment
-        
+
         Args:
             script: Path to script to execute
             timeout: Maximum execution time in seconds
             max_memory_mb: Maximum memory limit in MB (Unix only)
             max_cpu_percent: Maximum CPU usage percent (Unix only)
-            
+
         Returns:
             Script output (sanitized)
-            
+
         Raises:
             TaskExecutionError: If execution fails or violates limits
         """
@@ -932,33 +930,29 @@ class AutoCron:
                 f"Executing script in SAFE MODE: {script} "
                 f"(timeout={timeout}s, mem_limit={max_memory_mb}MB)"
             )
-            
+
             # Build safe command with resource monitoring
             cmd = [sys.executable, script]
-            env = {**os.environ, 'AUTOCRON_SAFE_MODE': '1'}
-            
+            env = {**os.environ, "AUTOCRON_SAFE_MODE": "1"}
+
             # Platform-specific safe execution
-            if os.name != 'nt':  # Unix/Linux/Mac
+            if os.name != "nt":  # Unix/Linux/Mac
                 try:
                     import resource
-                    
+
                     def set_limits():
                         """Set resource limits for subprocess."""
                         # Memory limit
                         if max_memory_mb:
                             max_memory_bytes = max_memory_mb * 1024 * 1024
                             resource.setrlimit(
-                                resource.RLIMIT_AS, 
-                                (max_memory_bytes, max_memory_bytes)
+                                resource.RLIMIT_AS, (max_memory_bytes, max_memory_bytes)
                             )
-                        
+
                         # CPU time limit (in seconds)
                         if timeout:
-                            resource.setrlimit(
-                                resource.RLIMIT_CPU,
-                                (timeout, timeout)
-                            )
-                    
+                            resource.setrlimit(resource.RLIMIT_CPU, (timeout, timeout))
+
                     result = subprocess.run(
                         cmd,
                         capture_output=True,
@@ -966,17 +960,12 @@ class AutoCron:
                         timeout=timeout,
                         check=True,
                         preexec_fn=set_limits,  # Apply resource limits
-                        env=env
+                        env=env,
                     )
                 except ImportError:
                     # resource module not available, fall back to basic subprocess
                     result = subprocess.run(
-                        cmd,
-                        capture_output=True,
-                        text=True,
-                        timeout=timeout,
-                        check=True,
-                        env=env
+                        cmd, capture_output=True, text=True, timeout=timeout, check=True, env=env
                     )
             else:  # Windows - use job objects for resource limits
                 result = subprocess.run(
@@ -986,32 +975,28 @@ class AutoCron:
                     timeout=timeout,
                     check=True,
                     creationflags=subprocess.CREATE_NEW_PROCESS_GROUP,
-                    env=env
+                    env=env,
                 )
-            
+
             # Sanitize output (remove potential sensitive data markers)
             output = result.stdout
             if len(output) > 10000:  # Limit output size
                 output = output[:10000] + "\n... (output truncated)"
-            
-            self.logger.info(f"Safe mode execution completed successfully")
+
+            self.logger.info("Safe mode execution completed successfully")
             return output
-            
+
         except subprocess.TimeoutExpired as e:
             self.logger.error(f"Safe mode: Script timed out after {timeout}s")
-            raise TaskExecutionError(
-                f"Script timed out after {timeout} seconds (safe mode)"
-            ) from e
+            raise TaskExecutionError(f"Script timed out after {timeout} seconds (safe mode)") from e
         except subprocess.CalledProcessError as e:
             self.logger.error(f"Safe mode: Script failed with code {e.returncode}")
             raise TaskExecutionError(
                 f"Script failed in safe mode (exit code {e.returncode}): {e.stderr[:500]}"
             ) from e
         except MemoryError as e:
-            self.logger.error(f"Safe mode: Memory limit exceeded")
-            raise TaskExecutionError(
-                f"Script exceeded memory limit ({max_memory_mb}MB)"
-            ) from e
+            self.logger.error("Safe mode: Memory limit exceeded")
+            raise TaskExecutionError(f"Script exceeded memory limit ({max_memory_mb}MB)") from e
         except Exception as e:
             self.logger.error(f"Safe mode: Unexpected error: {e}")
             raise TaskExecutionError(f"Safe mode execution failed: {str(e)}") from e

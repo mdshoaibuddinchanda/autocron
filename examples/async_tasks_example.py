@@ -116,9 +116,7 @@ def example_scheduler_api():
 
     scheduler.add_task(name="data_processor", func=process_data, every="8s")
 
-    scheduler.add_task(
-        name="flaky_task", func=flaky_task, every="6s", retries=2, retry_delay=1
-    )
+    scheduler.add_task(name="flaky_task", func=flaky_task, every="6s", retries=2, retry_delay=1)
 
     # Mix in a sync task
     scheduler.add_task(name="sync_task", func=sync_task, every="7s")

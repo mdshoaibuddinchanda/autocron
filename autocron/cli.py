@@ -49,12 +49,14 @@ def create_parser() -> argparse.ArgumentParser:
     # Start command
     start_parser = subparsers.add_parser("start", help="Start scheduler from config")
     start_parser.add_argument("--config", default="autocron.yaml", help="Config file path")
-    
+
     # Dashboard command
     dashboard_parser = subparsers.add_parser("dashboard", help="Show task dashboard")
     dashboard_parser.add_argument("--live", action="store_true", help="Live monitoring mode")
-    dashboard_parser.add_argument("--refresh", type=int, default=2, help="Refresh interval (seconds)")
-    
+    dashboard_parser.add_argument(
+        "--refresh", type=int, default=2, help="Refresh interval (seconds)"
+    )
+
     # Stats command
     stats_parser = subparsers.add_parser("stats", help="Show task statistics")
     stats_parser.add_argument("task", nargs="?", help="Specific task name")
@@ -189,14 +191,14 @@ def cmd_dashboard(args: argparse.Namespace) -> int:
     """Handle dashboard command."""
     try:
         from autocron.dashboard import Dashboard
-        
+
         dashboard = Dashboard()
-        
+
         if args.live:
             dashboard.show_live_monitor(refresh_rate=args.refresh)
         else:
             dashboard.show_summary()
-        
+
         return 0
     except ImportError:
         print("Error: Dashboard requires 'rich' package.", file=sys.stderr)
@@ -211,9 +213,9 @@ def cmd_stats(args: argparse.Namespace) -> int:
     """Handle stats command."""
     try:
         from autocron.dashboard import Dashboard
-        
+
         dashboard = Dashboard()
-        
+
         if args.task:
             # Show specific task stats
             dashboard.show_task_details(args.task)
@@ -223,7 +225,7 @@ def cmd_stats(args: argparse.Namespace) -> int:
         else:
             # Show summary
             dashboard.show_summary()
-        
+
         return 0
     except ImportError:
         print("Error: Stats requires 'rich' package.", file=sys.stderr)

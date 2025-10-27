@@ -29,24 +29,27 @@ import os
 # ===========================
 # Enable safe mode to run tasks in isolated subprocesses
 
+
 def example_1_basic_safe_mode():
     """Basic safe mode execution."""
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("Example 1: Basic Safe Mode")
-    print("="*60)
-    
+    print("=" * 60)
+
     scheduler = AutoCron()
-    
+
     # Create a test script
-    with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
-        f.write("""
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
+        f.write(
+            """
 import time
 print("Running in safe mode...")
 time.sleep(1)
 print("Task completed successfully!")
-""")
+"""
+        )
         script_path = f.name
-    
+
     try:
         # Add task with safe mode enabled
         scheduler.add_task(
@@ -54,14 +57,14 @@ print("Task completed successfully!")
             script=script_path,
             every="5m",
             safe_mode=True,  # ⚡ Enable safe mode
-            timeout=10
+            timeout=10,
         )
-        
+
         print("✅ Task added with safe mode enabled")
         print("   - Runs in isolated subprocess")
         print("   - Protected from parent process issues")
         print("   - Output is captured and sanitized")
-        
+
     finally:
         os.unlink(script_path)
 
@@ -70,26 +73,29 @@ print("Task completed successfully!")
 # =========================
 # Prevent memory-hungry tasks from consuming all RAM
 
+
 def example_2_memory_limits():
     """Enforce memory limits on tasks."""
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("Example 2: Memory Limits")
-    print("="*60)
-    
+    print("=" * 60)
+
     scheduler = AutoCron()
-    
+
     # Create a script that uses memory
-    with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
-        f.write("""
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
+        f.write(
+            """
 import time
 # This task will stay within limits
 data = [i for i in range(1000)]
 print(f"Processed {len(data)} items")
 time.sleep(0.5)
 print("Memory usage OK")
-""")
+"""
+        )
         script_path = f.name
-    
+
     try:
         scheduler.add_task(
             name="memory_limited_task",
@@ -97,14 +103,14 @@ print("Memory usage OK")
             every="10m",
             safe_mode=True,
             max_memory_mb=100,  # ⚡ Limit to 100MB
-            timeout=30
+            timeout=30,
         )
-        
+
         print("✅ Task added with 100MB memory limit")
         print("   - Task will be killed if it exceeds 100MB")
         print("   - Protects system from memory leaks")
         print("   - Ideal for processing large datasets safely")
-        
+
     finally:
         os.unlink(script_path)
 
@@ -113,16 +119,18 @@ print("Memory usage OK")
 # ====================================
 # Apply both memory and timeout limits
 
+
 def example_3_combined_limits():
     """Apply multiple resource limits."""
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("Example 3: Combined Resource Limits")
-    print("="*60)
-    
+    print("=" * 60)
+
     scheduler = AutoCron()
-    
-    with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
-        f.write("""
+
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
+        f.write(
+            """
 import requests
 import time
 
@@ -133,21 +141,22 @@ try:
     print(f"Status: {response.status_code}")
 except Exception as e:
     print(f"Error: {e}")
-""")
+"""
+        )
         script_path = f.name
-    
+
     try:
         scheduler.add_task(
             name="api_fetcher",
             script=script_path,
             every="15m",
             safe_mode=True,
-            max_memory_mb=256,      # 256MB memory limit
-            max_cpu_percent=50,     # 50% CPU limit (Unix only)
-            timeout=30,             # 30 second timeout
-            retries=2               # Retry on failure
+            max_memory_mb=256,  # 256MB memory limit
+            max_cpu_percent=50,  # 50% CPU limit (Unix only)
+            timeout=30,  # 30 second timeout
+            retries=2,  # Retry on failure
         )
-        
+
         print("✅ Task added with comprehensive limits:")
         print("   📊 Memory: 256MB max")
         print("   ⚡ CPU: 50% max (Unix/Linux/Mac)")
@@ -157,7 +166,7 @@ except Exception as e:
         print("   - API calls with rate limits")
         print("   - Web scraping tasks")
         print("   - Data processing pipelines")
-        
+
     finally:
         os.unlink(script_path)
 
@@ -166,11 +175,12 @@ except Exception as e:
 # ===========================================
 # Real-world production configuration
 
+
 def example_4_production_setup():
     """Production-ready safe mode configuration."""
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("Example 4: Production Setup")
-    print("="*60)
+    print("=" * 60)
 
     scheduler = AutoCron()
 
@@ -207,14 +217,14 @@ print(json.dumps(data))
             max_memory_mb=512,
             timeout=3600,  # 1 hour max
             retries=3,
-            notify='email',
+            notify="email",
             email_config={
-                'smtp_server': 'smtp.gmail.com',
-                'smtp_port': 587,
-                'from_email': 'backup@company.com',
-                'to_email': 'admin@company.com',
-                'password': 'app_password'
-            }
+                "smtp_server": "smtp.gmail.com",
+                "smtp_port": 587,
+                "from_email": "backup@company.com",
+                "to_email": "admin@company.com",
+                "password": "app_password",
+            },
         )
 
         # Analytics task with moderate limits
@@ -225,7 +235,7 @@ print(json.dumps(data))
             safe_mode=True,
             max_memory_mb=256,
             timeout=600,  # 10 minutes
-            retries=2
+            retries=2,
         )
 
         print("✅ Production tasks configured:")
@@ -254,7 +264,7 @@ print(json.dumps(data))
 # TODO Rename this here and in `example_4_production_setup`
 def _extracted_from_example_4_production_setup_10(arg0):
     # Create production scripts
-    result = tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False)
+    result = tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False)
     result.write(arg0)
     result.close()
 
@@ -265,23 +275,26 @@ def _extracted_from_example_4_production_setup_10(arg0):
 # ===========================================
 # Combine safe mode with persistence for reliability
 
+
 def example_5_safe_mode_with_persistence():
     """Safe mode + persistence for maximum reliability."""
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("Example 5: Safe Mode + Persistence")
-    print("="*60)
-    
+    print("=" * 60)
+
     scheduler = AutoCron()
-    
-    with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
-        f.write("""
+
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
+        f.write(
+            """
 import time
 print("Critical task executing...")
 time.sleep(1)
 print("Task completed")
-""")
+"""
+        )
         script_path = f.name
-    
+
     try:
         # Add critical task with safe mode
         scheduler.add_task(
@@ -291,33 +304,33 @@ print("Task completed")
             safe_mode=True,
             max_memory_mb=200,
             timeout=300,
-            retries=3
+            retries=3,
         )
-        
+
         # Save tasks with safe mode settings
         scheduler.save_tasks()  # Saves to ~/.autocron/tasks.yaml
-        
+
         print("✅ Task saved with safe mode configuration")
         print("\n   Saved settings:")
         print("   - safe_mode: True")
         print("   - max_memory_mb: 200")
         print("   - timeout: 300")
         print("   - retries: 3")
-        
+
         print("\n   After system restart:")
         print("   1. Load tasks: scheduler.load_tasks()")
         print("   2. Start scheduler: scheduler.start()")
         print("   3. Safe mode settings are preserved!")
-        
+
         # Demonstrate loading
         new_scheduler = AutoCron()
         new_scheduler.load_tasks()
-        
+
         loaded_task = list(new_scheduler.tasks.values())[0]
         print(f"\n   ✓ Loaded task '{loaded_task.name}'")
         print(f"   ✓ Safe mode: {loaded_task.safe_mode}")
         print(f"   ✓ Memory limit: {loaded_task.max_memory_mb}MB")
-        
+
     finally:
         os.unlink(script_path)
 
@@ -326,19 +339,20 @@ print("Task completed")
 # ============================================
 # Understand the differences
 
+
 def example_6_comparison():
     """Compare normal and safe mode execution."""
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("Example 6: Normal vs Safe Mode")
-    print("="*60)
-    
+    print("=" * 60)
+
     print("\n   NORMAL MODE (safe_mode=False):")
     print("   ✓ Faster execution (no subprocess overhead)")
     print("   ✓ Direct access to parent process")
     print("   ✓ Best for trusted, lightweight tasks")
     print("   ⚠️  No resource limits")
     print("   ⚠️  Errors can affect other tasks")
-    
+
     print("\n   SAFE MODE (safe_mode=True):")
     print("   ✓ Process isolation")
     print("   ✓ Resource limits enforced")
@@ -346,14 +360,14 @@ def example_6_comparison():
     print("   ✓ Error containment")
     print("   ⚠️  Slight overhead (subprocess)")
     print("   ⚠️  Only for script tasks")
-    
+
     print("\n   📋 WHEN TO USE SAFE MODE:")
     print("   ✅ Running untrusted scripts")
     print("   ✅ Production environments")
     print("   ✅ Tasks with known memory issues")
     print("   ✅ Multi-tenant systems")
     print("   ✅ Critical systems requiring isolation")
-    
+
     print("\n   📋 WHEN NORMAL MODE IS OK:")
     print("   ✅ Development/testing")
     print("   ✅ Trusted internal scripts")
@@ -363,9 +377,9 @@ def example_6_comparison():
 
 # Run all examples
 if __name__ == "__main__":
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("AutoCron Safe Mode Examples")
-    print("="*60)
+    print("=" * 60)
     print("\nSafe Mode provides:")
     print("  🔒 Process isolation")
     print("  📊 Memory limits")
@@ -373,7 +387,7 @@ if __name__ == "__main__":
     print("  ⏱️  Timeout enforcement")
     print("  🛡️  Output sanitization")
     print("  🔐 Error containment")
-    
+
     try:
         example_1_basic_safe_mode()
         example_2_memory_limits()
@@ -381,10 +395,10 @@ if __name__ == "__main__":
         example_4_production_setup()
         example_5_safe_mode_with_persistence()
         example_6_comparison()
-        
-        print("\n" + "="*60)
+
+        print("\n" + "=" * 60)
         print("✅ All examples completed!")
-        print("="*60)
+        print("=" * 60)
         print("\n💡 Key Takeaways:")
         print("   1. Safe mode = subprocess isolation + resource limits")
         print("   2. Use for untrusted code or production systems")
@@ -395,8 +409,9 @@ if __name__ == "__main__":
         print("   - Read SECURITY.md for best practices")
         print("   - Run tests: pytest tests/test_safe_mode.py")
         print("   - Check logs for safe mode execution details")
-        
+
     except Exception as e:
         print(f"\n❌ Error running examples: {e}")
         import traceback
+
         traceback.print_exc()
