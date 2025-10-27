@@ -26,7 +26,13 @@ try:
 except ImportError:
     _dashboard_available = False
     if TYPE_CHECKING:
-        from autocron.dashboard import Dashboard, TaskAnalytics, live_monitor, show_dashboard, show_task
+        from autocron.dashboard import (
+            Dashboard,
+            TaskAnalytics,
+            live_monitor,
+            show_dashboard,
+            show_task,
+        )
     else:
         Dashboard = None  # type: ignore
         TaskAnalytics = None  # type: ignore
