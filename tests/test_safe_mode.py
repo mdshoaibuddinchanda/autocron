@@ -2,7 +2,6 @@
 Tests for safe mode execution with resource limits and sandboxing.
 """
 
-
 import contextlib
 import os
 import tempfile
