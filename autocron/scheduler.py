@@ -17,7 +17,7 @@ import uuid
 from datetime import datetime, timedelta
 from functools import wraps
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Union, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Union
 
 from autocron.logger import get_logger
 from autocron.notifications import get_notification_manager
@@ -948,12 +948,16 @@ class AutoCron:
                             if max_memory_mb:
                                 max_memory_bytes = max_memory_mb * 1024 * 1024
                                 resource.setrlimit(  # type: ignore[attr-defined]
-                                    resource.RLIMIT_AS, (max_memory_bytes, max_memory_bytes)  # type: ignore[attr-defined]
+                                    resource.RLIMIT_AS,  # type: ignore[attr-defined]
+                                    (max_memory_bytes, max_memory_bytes),
                                 )
 
                             # CPU time limit (in seconds)
                             if timeout:
-                                resource.setrlimit(resource.RLIMIT_CPU, (timeout, timeout))  # type: ignore[attr-defined]
+                                resource.setrlimit(  # type: ignore[attr-defined]
+                                    resource.RLIMIT_CPU,  # type: ignore[attr-defined]
+                                    (timeout, timeout),
+                                )
 
                     result = subprocess.run(
                         cmd,

@@ -4,7 +4,7 @@ AutoCron - Automate scripts with zero setup.
 A cross-platform Python library for scheduling tasks with minimal configuration.
 """
 
-from typing import TYPE_CHECKING, Any, Callable, Optional
+from typing import TYPE_CHECKING
 
 from autocron.scheduler import (
     AutoCron,
