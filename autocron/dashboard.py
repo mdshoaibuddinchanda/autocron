@@ -14,10 +14,8 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional
 try:
     from rich import box
     from rich.console import Console
-    from rich.layout import Layout
     from rich.live import Live
     from rich.panel import Panel
-    from rich.progress import Progress, SpinnerColumn, TextColumn
     from rich.table import Table
 
     RICH_AVAILABLE = True

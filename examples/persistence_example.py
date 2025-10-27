@@ -192,7 +192,7 @@ def example_task_state_preservation():
         new_scheduler.load_tasks(save_path)
 
         if loaded_task := new_scheduler.get_task(name="counter_task"):
-            print(f"\nTask stats after load:")
+            print("\nTask stats after load:")
             _extracted_from_example_task_state_preservation_41(loaded_task)
             print("\n✓ Task state successfully preserved!")
 

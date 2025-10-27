@@ -219,7 +219,7 @@ def example_async_with_callbacks():
     time.sleep(10)
     scheduler.stop()
 
-    print(f"\n✓ Statistics:")
+    print("\n✓ Statistics:")
     print(f"  Successes: {success_count[0]}")
     print(f"  Failures: {failure_count[0]}")
     print()

@@ -165,7 +165,7 @@ def test_safe_mode_isolation(scheduler, safe_script):
 
 def test_safe_mode_persistence(scheduler, safe_script, tmp_path):
     """Test that safe mode settings are persisted."""
-    task_id = scheduler.add_task(
+    _ = scheduler.add_task(
         name="persistent_safe_task",
         script=safe_script,
         every="1h",

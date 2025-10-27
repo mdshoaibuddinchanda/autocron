@@ -732,7 +732,6 @@ class AutoCron:
         # sourcery skip: low-code-quality
         """Execute a single task with retries."""
         final_attempt = 0
-        final_success = False
         final_error = None
         final_duration = 0.0
 
@@ -753,7 +752,6 @@ class AutoCron:
 
                 duration = time.time() - start_time
                 final_duration = duration
-                final_success = True
                 final_attempt = attempt
 
                 # Task succeeded
