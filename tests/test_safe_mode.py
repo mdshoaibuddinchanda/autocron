@@ -2,10 +2,10 @@
 Tests for safe mode execution with resource limits and sandboxing.
 """
 
+
+import contextlib
 import os
 import tempfile
-import time
-from pathlib import Path
 
 import pytest
 
@@ -35,10 +35,8 @@ print("Completed successfully")
     yield script_path
 
     # Cleanup
-    try:
+    with contextlib.suppress(Exception):
         os.unlink(script_path)
-    except:
-        pass
 
 
 @pytest.fixture
@@ -57,10 +55,8 @@ for i in range(10000000):
 
     yield script_path
 
-    try:
+    with contextlib.suppress(Exception):
         os.unlink(script_path)
-    except:
-        pass
 
 
 @pytest.fixture
@@ -79,10 +75,8 @@ print("Should never reach here")
 
     yield script_path
 
-    try:
+    with contextlib.suppress(Exception):
         os.unlink(script_path)
-    except:
-        pass
 
 
 def test_safe_mode_basic_execution(scheduler, safe_script):
@@ -244,10 +238,8 @@ for i in range(1000):
         assert task.run_count == 1
 
     finally:
-        try:
+        with contextlib.suppress(Exception):
             os.unlink(large_output_script)
-        except:
-            pass
 
 
 def test_safe_mode_default_disabled(scheduler, safe_script):
@@ -279,6 +271,7 @@ def test_safe_mode_function_tasks_unsupported(scheduler):
 
     def my_func():
         print("Function task")
+        print("task_id:", task_id)
 
     # Safe mode should be ignored for function tasks
     task_id = scheduler.add_task(
