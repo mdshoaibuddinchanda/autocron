@@ -4,6 +4,8 @@ AutoCron - Automate scripts with zero setup.
 A cross-platform Python library for scheduling tasks with minimal configuration.
 """
 
+from typing import TYPE_CHECKING, Any, Callable, Optional
+
 from autocron.scheduler import (
     AutoCron,
     SchedulingError,
@@ -23,11 +25,14 @@ try:
     _dashboard_available = True
 except ImportError:
     _dashboard_available = False
-    Dashboard = None
-    TaskAnalytics = None
-    live_monitor = None
-    show_dashboard = None
-    show_task = None
+    if TYPE_CHECKING:
+        from autocron.dashboard import Dashboard, TaskAnalytics, live_monitor, show_dashboard, show_task
+    else:
+        Dashboard = None  # type: ignore
+        TaskAnalytics = None  # type: ignore
+        live_monitor = None  # type: ignore
+        show_dashboard = None  # type: ignore
+        show_task = None  # type: ignore
 
 __all__ = [
     "AutoCron",

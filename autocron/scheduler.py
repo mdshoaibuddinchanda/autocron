@@ -17,7 +17,7 @@ import uuid
 from datetime import datetime, timedelta
 from functools import wraps
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Union, TYPE_CHECKING
 
 from autocron.logger import get_logger
 from autocron.notifications import get_notification_manager
@@ -36,7 +36,10 @@ try:
     ANALYTICS_AVAILABLE = True
 except ImportError:
     ANALYTICS_AVAILABLE = False
-    TaskAnalytics = None
+    if TYPE_CHECKING:
+        from autocron.dashboard import TaskAnalytics
+    else:
+        TaskAnalytics = None  # type: ignore
 
 
 class TaskExecutionError(Exception):
@@ -151,8 +154,8 @@ class Task:
             self.interval_seconds = parse_interval(every)
         else:
             self.schedule_type = "cron"
-            self.schedule_value = cron
-            if not validate_cron_expression(cron):
+            self.schedule_value = cron or ""
+            if cron and not validate_cron_expression(cron):
                 raise ValueError(f"Invalid cron expression: {cron}")
 
         # Execution tracking
@@ -699,7 +702,7 @@ class AutoCron:
         while self._running:
             try:
                 # Check for tasks to run
-                tasks_to_run = []
+                tasks_to_run: List[Task] = []
 
                 with self._lock:
                     tasks_to_run.extend(task for task in self.tasks.values() if task.should_run())
@@ -743,11 +746,11 @@ class AutoCron:
                 # Execute task
                 if task.func:
                     self._execute_function(task.func, task.timeout)
-                elif task.safe_mode:
+                elif task.safe_mode and task.script:
                     self._execute_in_safe_mode(
                         task.script, task.timeout, task.max_memory_mb, task.max_cpu_percent
                     )
-                else:
+                elif task.script:
                     self._execute_script(task.script, task.timeout)
 
                 duration = time.time() - start_time
@@ -834,8 +837,8 @@ class AutoCron:
             return func()
 
         # Execute with timeout using threading
-        result = [None]
-        exception = [None]
+        result: List[Any] = [None]
+        exception: List[Optional[Exception]] = [None]
 
         def wrapper():
             try:
@@ -940,16 +943,17 @@ class AutoCron:
 
                     def set_limits():
                         """Set resource limits for subprocess."""
-                        # Memory limit
-                        if max_memory_mb:
-                            max_memory_bytes = max_memory_mb * 1024 * 1024
-                            resource.setrlimit(
-                                resource.RLIMIT_AS, (max_memory_bytes, max_memory_bytes)
-                            )
+                        with contextlib.suppress(Exception):
+                            # Memory limit
+                            if max_memory_mb:
+                                max_memory_bytes = max_memory_mb * 1024 * 1024
+                                resource.setrlimit(  # type: ignore[attr-defined]
+                                    resource.RLIMIT_AS, (max_memory_bytes, max_memory_bytes)  # type: ignore[attr-defined]
+                                )
 
-                        # CPU time limit (in seconds)
-                        if timeout:
-                            resource.setrlimit(resource.RLIMIT_CPU, (timeout, timeout))
+                            # CPU time limit (in seconds)
+                            if timeout:
+                                resource.setrlimit(resource.RLIMIT_CPU, (timeout, timeout))  # type: ignore[attr-defined]
 
                     result = subprocess.run(
                         cmd,
@@ -1001,7 +1005,7 @@ class AutoCron:
 
     def _setup_task_notifications(self, task: Task) -> None:
         """Set up notifications for a task."""
-        channels = [task.notify] if isinstance(task.notify, str) else task.notify
+        channels = [task.notify] if isinstance(task.notify, str) else (task.notify or [])
 
         for channel in channels:
             if channel == "desktop":
@@ -1039,12 +1043,15 @@ class AutoCron:
                 else self._interval_to_cron(task.schedule_value)
             )
 
-            self.os_adapter.create_scheduled_task(
-                task_name=task.name,
-                script_path=task.script,
-                cron_expr=cron_expr,
-                python_executable=sys.executable,
-            )
+            if task.script:
+                self.os_adapter.create_scheduled_task(
+                    task_name=task.name,
+                    script_path=task.script,
+                    cron_expr=cron_expr,
+                    python_executable=sys.executable,
+                )
+            else:
+                raise ValueError("Cannot deploy task without script path")
         except Exception as e:
             self.logger.error(f"Failed to register OS task: {e}")
 

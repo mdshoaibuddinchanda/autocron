@@ -9,7 +9,7 @@ import platform
 import re
 import sys
 from datetime import datetime, timedelta
-from typing import Optional
+from typing import Any, Dict, Optional
 
 
 class TimeParseError(Exception):
@@ -252,9 +252,9 @@ class SingletonMeta(type):
     Thread-safe singleton implementation.
     """
 
-    _instances = {}
+    _instances: Dict[type, Any] = {}
 
-    def __call__(cls, *args, **kwargs):
+    def __call__(cls, *args, **kwargs):  # type: ignore
         if cls not in cls._instances:
             cls._instances[cls] = super().__call__(*args, **kwargs)
         return cls._instances[cls]
