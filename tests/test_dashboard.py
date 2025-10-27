@@ -2,9 +2,10 @@
 Quick Dashboard Test - Generate sample data and show dashboard.
 """
 
-import time
 import random
-from autocron import schedule, get_global_scheduler
+import time
+
+from autocron import get_global_scheduler, schedule
 
 
 # Example tasks that will generate analytics data

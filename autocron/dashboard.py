@@ -9,16 +9,16 @@ import contextlib
 import json
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, List, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 try:
+    from rich import box
     from rich.console import Console
-    from rich.table import Table
-    from rich.panel import Panel
     from rich.layout import Layout
     from rich.live import Live
+    from rich.panel import Panel
     from rich.progress import Progress, SpinnerColumn, TextColumn
-    from rich import box
+    from rich.table import Table
 
     RICH_AVAILABLE = True
 except ImportError:

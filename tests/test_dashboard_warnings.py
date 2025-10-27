@@ -2,9 +2,10 @@
 Test Dashboard with Failures - Show how dashboard handles problematic tasks.
 """
 
-import time
 import random
-from autocron import schedule, get_global_scheduler
+import time
+
+from autocron import get_global_scheduler, schedule
 
 
 # Task that fails frequently to trigger warnings

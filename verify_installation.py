@@ -5,9 +5,9 @@ Run this script to verify that AutoCron is correctly installed
 and working on your system.
 """
 
-import sys
-import platform
 import importlib
+import platform
+import sys
 from typing import List, Tuple
 
 

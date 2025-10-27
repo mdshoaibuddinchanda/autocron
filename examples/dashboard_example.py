@@ -5,8 +5,9 @@ This example demonstrates the dashboard feature that tracks task execution
 statistics, shows performance metrics, and provides smart recommendations.
 """
 
-import time
 import random
+import time
+
 from autocron import schedule, start_scheduler
 
 
