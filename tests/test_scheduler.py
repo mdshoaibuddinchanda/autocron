@@ -232,7 +232,7 @@ class TestAutoCron:
             # sourcery skip: no-conditionals-in-tests
             if len(call_count) < 2:
                 # sourcery skip: raise-specific-error
-                raise Exception("Test error")
+                raise Exception("Testing error")
 
         task_id = scheduler.add_task(
             name="test_task", func=failing_func, every="1s", retries=2, retry_delay=1

@@ -103,7 +103,7 @@ class TestIntegration:
             # sourcery skip: no-conditionals-in-tests
             if len(call_count) < 3:
                 # sourcery skip: raise-specific-error
-                raise Exception("Intentional failure")
+                raise Exception("Intentional code failure")
 
         task_id = scheduler.add_task(
             name="retry_test", func=failing_task, every="1s", retries=3, retry_delay=1

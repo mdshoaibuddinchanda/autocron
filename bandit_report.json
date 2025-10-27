@@ -1,0 +1,287 @@
+{
+  "errors": [],
+  "generated_at": "2025-10-27T12:30:20Z",
+  "metrics": {
+    "_totals": {
+      "CONFIDENCE.HIGH": 6,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 6,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 2525,
+      "nosec": 0,
+      "skipped_tests": 13
+    },
+    "autocron/__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 41,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "autocron/cli.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 198,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "autocron/dashboard.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 382,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "autocron/logger.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 174,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "autocron/notifications.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 244,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "autocron/os_adapters.py": {
+      "CONFIDENCE.HIGH": 2,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 2,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 300,
+      "nosec": 0,
+      "skipped_tests": 12
+    },
+    "autocron/scheduler.py": {
+      "CONFIDENCE.HIGH": 4,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 4,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 969,
+      "nosec": 0,
+      "skipped_tests": 1
+    },
+    "autocron/utils.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 211,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "autocron/version.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 6,
+      "nosec": 0,
+      "skipped_tests": 0
+    }
+  },
+  "results": [
+    {
+      "code": "144                 # nosec B603 B607 - Controlled schtasks command with validated inputs\n145                 result = subprocess.run(cmd, capture_output=True, text=True, check=False)\n146 \n",
+      "col_offset": 25,
+      "end_col_offset": 89,
+      "filename": "autocron/os_adapters.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "line_number": 145,
+      "line_range": [
+        145
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b603_subprocess_without_shell_equals_true.html",
+      "test_id": "B603",
+      "test_name": "subprocess_without_shell_equals_true"
+    },
+    {
+      "code": "165             # nosec B603 B607 - Controlled schtasks command with validated task name\n166             result = subprocess.run(cmd, capture_output=True, text=True, check=False)\n167 \n",
+      "col_offset": 21,
+      "end_col_offset": 85,
+      "filename": "autocron/os_adapters.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "line_number": 166,
+      "line_range": [
+        166
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b603_subprocess_without_shell_equals_true.html",
+      "test_id": "B603",
+      "test_name": "subprocess_without_shell_equals_true"
+    },
+    {
+      "code": "885             # nosec B603 - Controlled execution of user-specified Python scripts\n886             result = subprocess.run(\n887                 [sys.executable, script],\n888                 capture_output=True,\n889                 text=True,\n890                 timeout=timeout,\n891                 check=True,\n892             )\n893             return result.stdout\n",
+      "col_offset": 21,
+      "end_col_offset": 13,
+      "filename": "autocron/scheduler.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "line_number": 886,
+      "line_range": [
+        886,
+        887,
+        888,
+        889,
+        890,
+        891,
+        892
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b603_subprocess_without_shell_equals_true.html",
+      "test_id": "B603",
+      "test_name": "subprocess_without_shell_equals_true"
+    },
+    {
+      "code": "961                     \n962                     result = subprocess.run(\n963                         cmd,\n964                         capture_output=True,\n965                         text=True,\n966                         timeout=timeout,\n967                         check=True,\n968                         preexec_fn=set_limits,  # Apply resource limits\n969                         env=env\n970                     )\n971                 except ImportError:\n",
+      "col_offset": 29,
+      "end_col_offset": 21,
+      "filename": "autocron/scheduler.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "line_number": 962,
+      "line_range": [
+        962,
+        963,
+        964,
+        965,
+        966,
+        967,
+        968,
+        969,
+        970
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b603_subprocess_without_shell_equals_true.html",
+      "test_id": "B603",
+      "test_name": "subprocess_without_shell_equals_true"
+    },
+    {
+      "code": "972                     # resource module not available, fall back to basic subprocess\n973                     result = subprocess.run(\n974                         cmd,\n975                         capture_output=True,\n976                         text=True,\n977                         timeout=timeout,\n978                         check=True,\n979                         env=env\n980                     )\n981             else:  # Windows - use job objects for resource limits\n",
+      "col_offset": 29,
+      "end_col_offset": 21,
+      "filename": "autocron/scheduler.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "line_number": 973,
+      "line_range": [
+        973,
+        974,
+        975,
+        976,
+        977,
+        978,
+        979,
+        980
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b603_subprocess_without_shell_equals_true.html",
+      "test_id": "B603",
+      "test_name": "subprocess_without_shell_equals_true"
+    },
+    {
+      "code": "981             else:  # Windows - use job objects for resource limits\n982                 result = subprocess.run(\n983                     cmd,\n984                     capture_output=True,\n985                     text=True,\n986                     timeout=timeout,\n987                     check=True,\n988                     creationflags=subprocess.CREATE_NEW_PROCESS_GROUP,\n989                     env=env\n990                 )\n991             \n",
+      "col_offset": 25,
+      "end_col_offset": 17,
+      "filename": "autocron/scheduler.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "line_number": 982,
+      "line_range": [
+        982,
+        983,
+        984,
+        985,
+        986,
+        987,
+        988,
+        989,
+        990
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b603_subprocess_without_shell_equals_true.html",
+      "test_id": "B603",
+      "test_name": "subprocess_without_shell_equals_true"
+    }
+  ]
+}

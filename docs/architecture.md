@@ -6,16 +6,16 @@ Understanding AutoCron's internal architecture and design principles.
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                     User Application                     │
+│                     User Application                    │
 │  (@schedule decorator or AutoCron class)                │
 └──────────────────────┬──────────────────────────────────┘
                        │
                        ▼
 ┌─────────────────────────────────────────────────────────┐
-│                   Core Scheduler                         │
-│  - Task Management                                       │
-│  - Thread Pool Executor                                  │
-│  - Schedule Calculation                                  │
+│                   Core Scheduler                        │
+│  - Task Management                                      │
+│  - Thread Pool Executor                                 │
+│  - Schedule Calculation                                 │
 └──────┬──────────────┬──────────────┬────────────────────┘
        │              │              │
        ▼              ▼              ▼
@@ -361,6 +361,86 @@ class CustomTask(Task):
 - Single-machine by default
 - No built-in distributed locking
 - Shared state via global variables
+
+## 🚀 New in v1.2.0: Async & Persistence Architecture
+
+### Async/Await Support
+
+**Module:** `scheduler.py` (enhanced)
+
+**Implementation:**
+```python
+# Automatic async detection
+if inspect.iscoroutinefunction(func):
+    return self._execute_async_function(func, timeout)
+else:
+    return self._execute_sync_function(func, timeout)
+```
+
+**Key Components:**
+- `_execute_async_function()` - Handles async execution with `asyncio.run()`
+- Event loop management - Isolated loops for each async task
+- Timeout support via `asyncio.wait_for()`
+- Mixed execution - Both sync and async in same scheduler
+
+**Design Decisions:**
+- ✅ Use `asyncio.run()` for clean isolation
+- ✅ No shared event loops (avoids complexity)
+- ✅ Automatic detection (zero config)
+- ✅ Full backward compatibility
+
+### Task Persistence
+
+**New Methods:**
+- `Task.to_dict()` - Serialize task to dictionary
+- `Task.from_dict()` - Deserialize task from dictionary
+- `AutoCron.save_tasks()` - Save all tasks to YAML/JSON
+- `AutoCron.load_tasks()` - Load tasks from file
+
+**Storage Format:**
+```yaml
+version: "1.0"
+saved_at: "2025-10-27T15:30:00"
+tasks:
+  - task_id: "unique-id"
+    name: "task_name"
+    script: "/path/to/script.py"
+    schedule_type: "interval"
+    schedule_value: "1h"
+    retries: 3
+    run_count: 145
+    last_run: "2025-10-27T14:00:00"
+    next_run: "2025-10-27T15:00:00"
+```
+
+**Design Decisions:**
+- ✅ Only script-based tasks (functions can't be serialized)
+- ✅ Both YAML and JSON supported
+- ✅ State preservation (run counts, schedules, etc.)
+- ✅ Merge and replace modes for loading
+- ✅ Default location: `~/.autocron/tasks.yaml`
+
+**Data Flow:**
+1. User calls `scheduler.save_tasks()`
+2. Iterate through `self.tasks`
+3. Call `task.to_dict()` on each task
+4. Serialize to YAML/JSON with metadata
+5. Write to file with atomic operations
+
+### Dashboard & Analytics (v1.1.0)
+
+**Module:** `dashboard.py`
+
+**Components:**
+- `TaskAnalytics` - Execution data storage and analysis
+- `Dashboard` - Rich terminal UI rendering
+- JSON storage at `~/.autocron/analytics.json`
+
+**Integration:**
+- Scheduler calls `analytics.record_execution()` after each task
+- Fail-safe design - analytics never breaks tasks
+- Last 100 executions stored per task
+- Smart recommendations based on patterns
 
 ## 🚀 Future Enhancements
 

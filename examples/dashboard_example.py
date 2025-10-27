@@ -26,7 +26,7 @@ def medium_task():
 def sometimes_fails():
     """A task that occasionally fails to demonstrate failure tracking."""
     if random.random() < 0.3:  # 30% chance of failure
-        raise Exception("Simulated random failure")
+        raise Exception("Simulated  random  failure")
     print("Sometimes fails task executed")
     time.sleep(0.2)
 

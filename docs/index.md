@@ -24,13 +24,20 @@ Welcome to AutoCron documentation!
 ### Using pip
 
 ```bash
-pip install autocron
+# Basic installation
+pip install autocron-scheduler
+
+# With dashboard support
+pip install autocron-scheduler[dashboard]
+
+# With all features (recommended)
+pip install autocron-scheduler[all]
 ```
 
 ### With notifications support
 
 ```bash
-pip install autocron[notifications]
+pip install autocron-scheduler[notifications]
 ```
 
 ### From source
@@ -38,7 +45,7 @@ pip install autocron[notifications]
 ```bash
 git clone https://github.com/mdshoaibuddinchanda/autocron.git
 cd autocron
-pip install -e .
+pip install -e .[all]
 ```
 
 ## Quick Start
@@ -51,6 +58,12 @@ from autocron import schedule, start_scheduler
 @schedule(every='5m')
 def my_task():
     print("Running every 5 minutes!")
+
+# NEW in v1.2: Async support!
+@schedule(every='10m')
+async def async_task():
+    await fetch_data()
+    print("Async task complete!")
 
 if __name__ == '__main__':
     start_scheduler()
@@ -67,6 +80,10 @@ scheduler.add_task(
     script='backup.py',
     every='1h'
 )
+
+# NEW in v1.2: Save tasks for persistence
+scheduler.save_tasks()  # Survives system restarts!
+
 scheduler.start()
 ```
 
@@ -76,6 +93,14 @@ scheduler.start()
 @schedule(cron='0 9 * * *')  # Daily at 9 AM
 def daily_report():
     print("Generating report...")
+```
+
+### 4. Monitor with Dashboard (v1.1+)
+
+```bash
+autocron dashboard          # View all tasks
+autocron stats my_task      # Task analytics
+autocron dashboard --live   # Live monitoring
 ```
 
 ## Core Concepts
@@ -97,6 +122,10 @@ def daily_report():
 
 - ✅ Cross-platform (Windows, Linux, macOS)
 - ✅ Zero configuration required
+- ✅ **Async/await support** (v1.2+)
+- ✅ **Task persistence** (v1.2+) - Survive system restarts
+- ✅ **Visual dashboard** (v1.1+) - Monitor tasks
+- ✅ **Smart analytics** (v1.1+) - Execution tracking
 - ✅ Automatic retries with exponential backoff
 - ✅ Comprehensive logging
 - ✅ Desktop and email notifications

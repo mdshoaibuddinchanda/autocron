@@ -6,6 +6,8 @@ We release patches for security vulnerabilities for the following versions:
 
 | Version | Supported          |
 | ------- | ------------------ |
+| 1.2.x   | :white_check_mark: |
+| 1.1.x   | :white_check_mark: |
 | 1.0.x   | :white_check_mark: |
 | < 1.0   | :x:                |
 
@@ -52,7 +54,53 @@ We take the security of AutoCron seriously. If you believe you have found a secu
 
 When using AutoCron:
 
-### 1. Credentials Management
+### 1. Safe Mode (New in v1.2.0) 🔒
+
+**Safe Mode provides sandboxed execution with resource limits to protect against:**
+- Runaway scripts consuming excessive memory
+- CPU-intensive tasks blocking the system
+- Arbitrary code execution risks
+- Task failures affecting other tasks
+
+**Enable Safe Mode for:**
+```python
+from autocron import AutoCron
+
+scheduler = AutoCron()
+
+# Untrusted or resource-intensive scripts
+scheduler.add_task(
+    name="external_script",
+    script="user_provided.py",
+    every="1h",
+    safe_mode=True,          # ⚡ Enable process isolation
+    max_memory_mb=256,       # Limit memory to 256MB
+    max_cpu_percent=50,      # Limit CPU to 50% (Unix only)
+    timeout=300              # 5 minute timeout
+)
+```
+
+**Safe Mode Features:**
+- ✅ **Process Isolation**: Tasks run in separate subprocess
+- ✅ **Memory Limits**: Enforce maximum memory usage (Unix/Linux/Mac)
+- ✅ **CPU Limits**: Control CPU consumption (Unix/Linux/Mac)
+- ✅ **Timeout Enforcement**: Hard kill after specified time
+- ✅ **Output Sanitization**: Truncate large outputs (10KB limit)
+- ✅ **Error Containment**: Failures don't affect parent process
+
+**When to Use Safe Mode:**
+- ✅ Running user-provided scripts
+- ✅ Production environments with strict SLAs
+- ✅ Multi-tenant task scheduling
+- ✅ Tasks with unknown resource requirements
+- ✅ Scripts that process external data
+
+**Safe Mode Limitations:**
+- ⚠️ Only works with script-based tasks (not function tasks)
+- ⚠️ Slight performance overhead (subprocess creation)
+- ⚠️ Resource limits more effective on Unix/Linux/Mac
+
+### 2. Credentials Management
 
 - **Never** hardcode credentials in scripts or configuration files
 - Use environment variables for sensitive data
@@ -70,8 +118,9 @@ email_config = {
 }
 ```
 
-### 2. Script Execution
+### 3. Script Execution
 
+- **Use Safe Mode for untrusted scripts** (v1.2.0+)
 - Validate and sanitize all script paths
 - Use absolute paths when possible
 - Set appropriate file permissions
@@ -79,10 +128,24 @@ email_config = {
 
 ```python
 import os
+from autocron import AutoCron
 
+scheduler = AutoCron()
+
+# Validate script path
 script_path = os.path.abspath(user_provided_path)
 if not script_path.startswith('/safe/directory/'):
     raise ValueError("Invalid script path")
+
+# Run with safe mode
+scheduler.add_task(
+    name="validated_task",
+    script=script_path,
+    every="1h",
+    safe_mode=True,       # ⚡ Enable sandboxing
+    max_memory_mb=200,
+    timeout=600
+)
 ```
 
 ### 3. Input Validation

@@ -7,7 +7,11 @@ Get up and running with AutoCron in 5 minutes!
 ### 1. Install AutoCron
 
 ```bash
-pip install autocron
+# Basic installation
+pip install autocron-scheduler
+
+# With all features (dashboard, async support)
+pip install autocron-scheduler[all]
 ```
 
 ### 2. Create Your First Script
@@ -22,6 +26,14 @@ def hello_world():
     """This runs every minute"""
     print("Hello from AutoCron!")
 
+# NEW in v1.2: Async support!
+@schedule(every='2m')
+async def async_hello():
+    """This runs every 2 minutes"""
+    import asyncio
+    await asyncio.sleep(1)
+    print("Hello from async AutoCron!")
+
 if __name__ == '__main__':
     print("🚀 Scheduler started! Press Ctrl+C to stop")
     start_scheduler(blocking=True)
@@ -33,7 +45,16 @@ if __name__ == '__main__':
 python my_first_scheduler.py
 ```
 
-That's it! Your task is now running every minute. 🎉
+That's it! Your tasks are now running. 🎉
+
+### 4. Monitor Your Tasks (v1.1+)
+
+While your script is running, open a **new terminal** and try:
+
+```bash
+autocron dashboard          # View task summary
+autocron stats hello_world  # View task details
+```
 
 ## 📝 Common Patterns
 

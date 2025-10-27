@@ -116,6 +116,56 @@ Get list of all scheduled tasks.
 
 **Returns:** List of task dictionaries
 
+#### save_tasks() 🆕 v1.2.0
+
+```python
+def save_tasks(self, path: Optional[str] = None) -> str
+```
+
+Save all tasks to a file for persistence across restarts.
+
+**Parameters:**
+- `path` (str, optional): Path to save file (YAML or JSON). Default: `~/.autocron/tasks.yaml`
+
+**Returns:** Path where tasks were saved
+
+**Note:** Only script-based tasks can be persisted. Function-based tasks must be registered programmatically.
+
+**Example:**
+```python
+scheduler = AutoCron()
+scheduler.add_task(name="backup", script="backup.py", every="1h")
+
+# Save tasks
+scheduler.save_tasks()  # Saves to ~/.autocron/tasks.yaml
+scheduler.save_tasks("my_tasks.json")  # Custom location
+```
+
+#### load_tasks() 🆕 v1.2.0
+
+```python
+def load_tasks(self, path: Optional[str] = None, replace: bool = False) -> int
+```
+
+Load tasks from a persistence file.
+
+**Parameters:**
+- `path` (str, optional): Path to load file. Default: `~/.autocron/tasks.yaml`
+- `replace` (bool): If `True`, clear existing tasks. If `False`, merge. Default: `False`
+
+**Returns:** Number of tasks loaded
+
+**Example:**
+```python
+scheduler = AutoCron()
+
+# Load tasks (merge with existing)
+count = scheduler.load_tasks()
+
+# Replace all tasks
+count = scheduler.load_tasks(replace=True)
+```
+
 #### from_config()
 
 ```python
@@ -190,7 +240,7 @@ Check if task should run now.
 
 ### @schedule
 
-Decorator for scheduling functions.
+Decorator for scheduling functions (supports both sync and async!).
 
 ```python
 def schedule(
@@ -208,14 +258,96 @@ def schedule(
 
 **Parameters:** Same as `AutoCron.add_task()`
 
+**Async Support** 🆕 v1.2.0: Now automatically detects and handles async functions!
+
 **Example:**
 ```python
 from autocron import schedule
 
+# Synchronous task
 @schedule(every='5m', retries=2)
 def my_task():
-    print("Task running!")
+    print("Sync task running!")
+
+# Asynchronous task (NEW in v1.2!)
+@schedule(every='10m')
+async def async_task():
+    async with aiohttp.ClientSession() as session:
+        data = await session.get('https://api.example.com')
+        return await data.json()
 ```
+
+---
+
+## Dashboard API 🆕 v1.1.0
+
+### show_dashboard()
+
+```python
+def show_dashboard() -> None
+```
+
+Display task summary dashboard in terminal.
+
+**Example:**
+```python
+from autocron import show_dashboard
+
+show_dashboard()
+```
+
+### show_task()
+
+```python
+def show_task(name: str) -> None
+```
+
+Display detailed analytics for a specific task.
+
+**Parameters:**
+- `name` (str): Task name
+
+**Example:**
+```python
+from autocron import show_task
+
+show_task("backup_task")
+```
+
+### Dashboard Class
+
+```python
+class Dashboard:
+    def __init__(self, analytics: TaskAnalytics)
+    
+    def show_summary(self) -> None
+    def show_task_details(self, task_name: str) -> None
+    def show_live_monitor(self, refresh_interval: int = 2) -> None
+```
+
+For custom dashboard implementations.
+
+### TaskAnalytics Class
+
+```python
+class TaskAnalytics:
+    def __init__(self, storage_path: Optional[str] = None)
+    
+    def record_execution(
+        self,
+        task_name: str,
+        success: bool,
+        duration: float,
+        error: Optional[str] = None,
+        retry_count: int = 0
+    ) -> None
+    
+    def get_task_stats(self, task_name: str) -> Dict[str, Any]
+    def get_all_tasks(self) -> List[str]
+    def get_recommendations(self, task_name: str) -> List[str]
+```
+
+For custom analytics implementations.
 
 ---
 

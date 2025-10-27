@@ -421,6 +421,127 @@ email_config = {
 
 ---
 
+## New Features (v1.2.0)
+
+### Does AutoCron support async/await?
+
+Yes! As of v1.2.0, you can schedule async functions:
+
+```python
+@schedule(every='5m')
+async def fetch_data():
+    async with aiohttp.ClientSession() as session:
+        data = await session.get('https://api.example.com')
+        return await data.json()
+```
+
+AutoCron automatically detects async functions and executes them properly.
+
+### Can tasks survive system restarts?
+
+Yes! Use task persistence (v1.2.0):
+
+```python
+# Save tasks before shutdown
+scheduler.save_tasks()  # Saves to ~/.autocron/tasks.yaml
+
+# After restart, load tasks back
+scheduler.load_tasks()
+scheduler.start()
+```
+
+### What's the difference between save_tasks() and from_config()?
+
+- **`save_tasks()`** (v1.2.0) - Saves task configuration AND execution state (run counts, schedules, etc.) to YAML/JSON
+- **`from_config()`** - Creates a new scheduler from a static YAML configuration file (configuration only)
+
+Use `save_tasks()` for persistence across restarts, and `from_config()` for initial setup from configuration.
+
+### Can I schedule async and sync tasks together?
+
+Yes! Mix them freely:
+
+```python
+@schedule(every='5m')
+def sync_task():
+    print("Sync task")
+
+@schedule(every='10m')
+async def async_task():
+    await asyncio.sleep(1)
+    print("Async task")
+```
+
+### Does the dashboard require additional installation?
+
+Yes, the dashboard requires the `rich` library:
+
+```bash
+pip install autocron-scheduler[dashboard]
+# or
+pip install autocron-scheduler[all]
+```
+
+### How do I view the dashboard?
+
+```bash
+# CLI
+autocron dashboard          # Summary view
+autocron stats task_name    # Task details
+autocron dashboard --live   # Live monitoring
+
+# Or in Python
+from autocron import show_dashboard
+show_dashboard()
+```
+
+### What data does the dashboard track?
+
+- Total runs and success/failure rates
+- Average execution duration
+- Retry patterns and failure analysis
+- Last 100 executions with timestamps
+- Smart recommendations based on patterns
+
+### Can I export analytics data?
+
+Yes:
+
+```bash
+autocron stats --export analytics.json
+```
+
+Or programmatically:
+
+```python
+from autocron.dashboard import TaskAnalytics
+
+analytics = TaskAnalytics()
+stats = analytics.get_task_stats("my_task")
+```
+
+### Why can't I persist function-based tasks?
+
+Functions contain code and closures that can't be serialized. Only script-based tasks can be saved:
+
+```python
+# ❌ Can't be persisted
+@schedule(every='1h')
+def my_function():
+    pass
+
+# ✅ Can be persisted
+scheduler.add_task(
+    name="my_task",
+    script="my_script.py",
+    every="1h"
+)
+```
+
+For production, use scripts for tasks that need persistence.
+
+---
+
 ## Development
 
 ### Can I contribute to AutoCron?

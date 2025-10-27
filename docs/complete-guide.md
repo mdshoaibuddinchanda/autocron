@@ -16,22 +16,32 @@ AutoCron is a cross-platform Python library that makes scheduling tasks incredib
 - 🚀 **Zero Configuration** - Schedule tasks in seconds with minimal code
 - 🌍 **Cross-Platform** - Works on Windows, Linux, and macOS
 - 🔄 **Flexible Scheduling** - Support for intervals, cron expressions, and custom schedules
+- ⚡ **Async/Await Support** (v1.2+) - Native async function scheduling
+- 💾 **Task Persistence** (v1.2+) - Save and restore tasks across system restarts
+- 📊 **Visual Dashboard** (v1.1+) - Monitor tasks with beautiful terminal UI
+- 📈 **Smart Analytics** (v1.1+) - Automatic execution tracking and recommendations
 - 📊 **Built-in Logging** - Automatic execution tracking and error logging
 - 🔔 **Notifications** - Optional email and desktop notifications
 - ⚡ **Retry Logic** - Configurable retry mechanisms with exponential backoff
-- 📈 **Progress Tracking** - Integration with tqdm for long-running tasks
 - 🎯 **Type Safe** - Full type hints and mypy support
-- 🧪 **Well Tested** - Comprehensive test coverage across all platforms
+- 🧪 **Well Tested** - 113 tests, 63% coverage, core at 80%+
 
 ## 📦 Installation
 
 ```bash
-pip install autocron
+# Basic installation
+pip install autocron-scheduler
+
+# With dashboard support
+pip install autocron-scheduler[dashboard]
+
+# With all features (recommended)
+pip install autocron-scheduler[all]
 ```
 
 For desktop notifications support:
 ```bash
-pip install autocron[notifications]
+pip install autocron-scheduler[notifications]
 ```
 
 ### From Source / Development
@@ -122,7 +132,225 @@ scheduler.add_task(
 scheduler.start()
 ```
 
-## � Cross-Platform Sample Code
+## 🆕 New in v1.2.0: Async/Await Support
+
+AutoCron now natively supports async functions! Schedule async tasks alongside regular sync tasks seamlessly.
+
+### Basic Async Task
+
+```python
+from autocron import schedule
+import aiohttp
+import asyncio
+
+@schedule(every='5m')
+async def fetch_api_data():
+    """Async function - runs every 5 minutes"""
+    async with aiohttp.ClientSession() as session:
+        async with session.get('https://api.example.com/data') as resp:
+            data = await resp.json()
+            print(f"Fetched {len(data)} items")
+            return data
+
+@schedule(every='10m', retries=2)
+async def process_async_batch():
+    """Process multiple items concurrently"""
+    async def process_item(item_id):
+        await asyncio.sleep(0.5)  # Simulate async work
+        return f"Processed {item_id}"
+    
+    # Process 10 items concurrently
+    results = await asyncio.gather(
+        *[process_item(i) for i in range(10)]
+    )
+    print(f"Completed: {len(results)} items")
+```
+
+### Mixed Sync and Async Tasks
+
+```python
+from autocron import AutoCron
+import asyncio
+
+scheduler = AutoCron()
+
+# Regular sync task
+def sync_backup():
+    print("Running sync backup...")
+    # Your sync code here
+
+# Async task
+async def async_monitor():
+    print("Running async monitor...")
+    await asyncio.sleep(1)
+    # Your async code here
+
+# Both work together!
+scheduler.add_task(name="backup", func=sync_backup, every="1h")
+scheduler.add_task(name="monitor", func=async_monitor, every="5m")
+
+scheduler.start()
+```
+
+### Async with Timeout and Retries
+
+```python
+@schedule(every='10m', timeout=60, retries=3)
+async def api_with_timeout():
+    """Async task with 60-second timeout and 3 retries"""
+    async with aiohttp.ClientSession() as session:
+        async with session.get('https://slow-api.example.com') as resp:
+            return await resp.json()
+```
+
+**Key Benefits:**
+- ✅ Works with async libraries (aiohttp, asyncpg, httpx, etc.)
+- ✅ Efficient I/O-bound task execution
+- ✅ No thread blocking for async operations
+- ✅ Automatic detection - just use `async def`
+- ✅ Full retry and timeout support
+
+See [async_tasks_example.py](../examples/async_tasks_example.py) for more examples.
+
+## 🆕 New in v1.2.0: Task Persistence
+
+Save tasks to disk and restore them after system restarts. Perfect for production deployments!
+
+### Save and Load Tasks
+
+```python
+from autocron import AutoCron
+
+scheduler = AutoCron()
+
+# Add tasks
+scheduler.add_task(
+    name="backup",
+    script="backup.py",
+    every="1h",
+    retries=3
+)
+
+scheduler.add_task(
+    name="monitor",
+    script="monitor.py",
+    every="5m"
+)
+
+# Save all tasks to file
+scheduler.save_tasks()  # Saves to ~/.autocron/tasks.yaml
+
+# Or save to custom location
+scheduler.save_tasks("production_tasks.yaml")
+scheduler.save_tasks("backup_tasks.json")  # JSON also supported
+```
+
+### Load Tasks After Restart
+
+```python
+from autocron import AutoCron
+
+# After system restart...
+scheduler = AutoCron()
+
+# Load saved tasks
+scheduler.load_tasks()  # Loads from ~/.autocron/tasks.yaml
+
+# Merge with existing tasks (default)
+scheduler.load_tasks("production_tasks.yaml")
+
+# Or replace all tasks
+scheduler.load_tasks("production_tasks.yaml", replace=True)
+
+# Start scheduler - tasks will run as configured
+scheduler.start()
+```
+
+### Task State is Preserved!
+
+Persistence saves not just configuration, but also execution state:
+- ✅ Run counts and fail counts
+- ✅ Last run and next run times
+- ✅ Schedule configuration
+- ✅ Retry settings
+- ✅ Notification preferences
+
+**Example saved task (YAML):**
+```yaml
+version: "1.0"
+saved_at: "2025-10-27T15:30:00"
+tasks:
+  - task_id: "abc-123"
+    name: "backup"
+    script: "/path/to/backup.py"
+    schedule_type: "interval"
+    schedule_value: "1h"
+    retries: 3
+    retry_delay: 60
+    timeout: null
+    run_count: 145
+    fail_count: 2
+    last_run: "2025-10-27T14:00:00"
+    next_run: "2025-10-27T15:00:00"
+    enabled: true
+```
+
+**Important Notes:**
+- Only **script-based tasks** can be persisted
+- Function-based tasks must be registered programmatically (they contain code/closures)
+- Both YAML and JSON formats supported
+- Perfect for version control and deployment
+
+See [persistence_example.py](../examples/persistence_example.py) for more examples.
+
+## 📊 Dashboard & Analytics (v1.1+)
+
+Monitor your tasks with the built-in dashboard and analytics system.
+
+### CLI Commands
+
+```bash
+# View task summary
+autocron dashboard
+
+# View specific task details
+autocron stats backup_task
+
+# Live monitoring (updates every 2 seconds)
+autocron dashboard --live --refresh 2
+
+# Export analytics to file
+autocron stats --export analytics.json
+```
+
+### Programmatic API
+
+```python
+from autocron import show_dashboard, show_task, Dashboard
+
+# Show summary of all tasks
+show_dashboard()
+
+# Show detailed task analysis
+show_task("backup_task")
+
+# Custom dashboard usage
+dashboard = Dashboard()
+dashboard.show_summary()
+dashboard.show_task_details("backup_task")
+```
+
+**Features:**
+- ✅ Success/failure rates with visual indicators
+- ✅ Average execution duration tracking
+- ✅ Retry pattern analysis
+- ✅ Smart recommendations (low success, high retries, etc.)
+- ✅ Last 100 executions stored
+- ✅ Beautiful terminal UI with rich formatting
+
+See [dashboard_example.py](../examples/dashboard_example.py) for more examples.
+
+## 🎛️ Cross-Platform Sample Code
 
 AutoCron works seamlessly across **Windows**, **Linux**, and **macOS**. Here's a complete example that demonstrates common use cases on all platforms:
 
