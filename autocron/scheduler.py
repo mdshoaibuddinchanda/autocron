@@ -24,6 +24,14 @@ from autocron.utils import (
     validate_cron_expression,
 )
 
+# Optional analytics import
+try:
+    from autocron.dashboard import TaskAnalytics
+    ANALYTICS_AVAILABLE = True
+except ImportError:
+    ANALYTICS_AVAILABLE = False
+    TaskAnalytics = None
+
 
 class TaskExecutionError(Exception):
     """Exception raised when task execution fails."""
@@ -209,6 +217,14 @@ class AutoCron:
         self._thread: Optional[threading.Thread] = None
         self._executor_threads: List[threading.Thread] = []
         self._lock = threading.Lock()
+        
+        # Analytics tracking (optional)
+        self.analytics = None
+        if ANALYTICS_AVAILABLE:
+            try:
+                self.analytics = TaskAnalytics()
+            except Exception as e:
+                self.logger.warning(f"Analytics unavailable: {e}")
 
         # OS adapter for native scheduling
         self.os_adapter: Optional[OSAdapter] = None
@@ -437,6 +453,11 @@ class AutoCron:
 
     def _execute_task(self, task: Task) -> None:
         """Execute a single task with retries."""
+        final_attempt = 0
+        final_success = False
+        final_error = None
+        final_duration = 0.0
+        
         for attempt in range(task.retries + 1):
             try:
                 self.logger.log_task_start(task.name, task.task_id)
@@ -449,6 +470,9 @@ class AutoCron:
                     self._execute_script(task.script, task.timeout)
 
                 duration = time.time() - start_time
+                final_duration = duration
+                final_success = True
+                final_attempt = attempt
 
                 # Task succeeded
                 task.increment_run_count()
@@ -467,10 +491,24 @@ class AutoCron:
                     except Exception as e:
                         self.logger.error(f"Error in success callback: {e}")
 
+                # Record analytics
+                if self.analytics:
+                    try:
+                        self.analytics.record_execution(
+                            task_name=task.name,
+                            success=True,
+                            duration=duration,
+                            retry_count=attempt
+                        )
+                    except Exception:
+                        pass  # Don't fail task due to analytics error
+
                 return
 
             except Exception as e:
                 task.increment_fail_count()
+                final_error = str(e)
+                final_attempt = attempt
 
                 self.logger.log_task_failure(
                     task.name, task.task_id, e, attempt + 1, task.retries + 1
@@ -490,6 +528,19 @@ class AutoCron:
                             task.on_failure(e)
                         except Exception as cb_error:
                             self.logger.error(f"Error in failure callback: {cb_error}")
+
+                    # Record analytics
+                    if self.analytics:
+                        try:
+                            self.analytics.record_execution(
+                                task_name=task.name,
+                                success=False,
+                                duration=final_duration,
+                                error=final_error,
+                                retry_count=final_attempt + 1
+                            )
+                        except Exception:
+                            pass  # Don't fail task due to analytics error
 
                     return
 

@@ -49,6 +49,16 @@ def create_parser() -> argparse.ArgumentParser:
     # Start command
     start_parser = subparsers.add_parser("start", help="Start scheduler from config")
     start_parser.add_argument("--config", default="autocron.yaml", help="Config file path")
+    
+    # Dashboard command
+    dashboard_parser = subparsers.add_parser("dashboard", help="Show task dashboard")
+    dashboard_parser.add_argument("--live", action="store_true", help="Live monitoring mode")
+    dashboard_parser.add_argument("--refresh", type=int, default=2, help="Refresh interval (seconds)")
+    
+    # Stats command
+    stats_parser = subparsers.add_parser("stats", help="Show task statistics")
+    stats_parser.add_argument("task", nargs="?", help="Specific task name")
+    stats_parser.add_argument("--export", help="Export stats to JSON file")
 
     return parser
 
@@ -175,6 +185,55 @@ def cmd_start(args: argparse.Namespace) -> int:
         return 1
 
 
+def cmd_dashboard(args: argparse.Namespace) -> int:
+    """Handle dashboard command."""
+    try:
+        from autocron.dashboard import Dashboard
+        
+        dashboard = Dashboard()
+        
+        if args.live:
+            dashboard.show_live_monitor(refresh_rate=args.refresh)
+        else:
+            dashboard.show_summary()
+        
+        return 0
+    except ImportError:
+        print("Error: Dashboard requires 'rich' package.", file=sys.stderr)
+        print("Install it with: pip install autocron-scheduler[dashboard]", file=sys.stderr)
+        return 1
+    except Exception as e:
+        print(f"Error showing dashboard: {e}", file=sys.stderr)
+        return 1
+
+
+def cmd_stats(args: argparse.Namespace) -> int:
+    """Handle stats command."""
+    try:
+        from autocron.dashboard import Dashboard
+        
+        dashboard = Dashboard()
+        
+        if args.task:
+            # Show specific task stats
+            dashboard.show_task_details(args.task)
+        elif args.export:
+            # Export all stats
+            dashboard.export_stats(args.export)
+        else:
+            # Show summary
+            dashboard.show_summary()
+        
+        return 0
+    except ImportError:
+        print("Error: Stats requires 'rich' package.", file=sys.stderr)
+        print("Install it with: pip install autocron-scheduler[dashboard]", file=sys.stderr)
+        return 1
+    except Exception as e:
+        print(f"Error showing stats: {e}", file=sys.stderr)
+        return 1
+
+
 def main(argv: Optional[list] = None) -> int:
     """
     Main CLI entry point.
@@ -199,6 +258,8 @@ def main(argv: Optional[list] = None) -> int:
         "stop": cmd_stop,
         "logs": cmd_logs,
         "start": cmd_start,
+        "dashboard": cmd_dashboard,
+        "stats": cmd_stats,
     }
 
     if handler := handlers.get(args.command):
