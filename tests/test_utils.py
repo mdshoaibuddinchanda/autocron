@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 
 import pytest
 
-from autocron.utils import (
+from autocron.core.utils import (
     TimeParseError,
     calculate_retry_delay,
     format_timedelta,

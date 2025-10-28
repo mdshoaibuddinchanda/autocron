@@ -9,7 +9,7 @@ import sys
 from typing import Optional
 
 from autocron import AutoCron, __version__
-from autocron.logger import get_logger
+from autocron.logging.logger import get_logger
 
 
 def create_parser() -> argparse.ArgumentParser:
@@ -190,7 +190,7 @@ def cmd_start(args: argparse.Namespace) -> int:
 def cmd_dashboard(args: argparse.Namespace) -> int:
     """Handle dashboard command."""
     try:
-        from autocron.dashboard import Dashboard
+        from autocron.interface.dashboard import Dashboard
 
         dashboard = Dashboard()
 
@@ -212,7 +212,7 @@ def cmd_dashboard(args: argparse.Namespace) -> int:
 def cmd_stats(args: argparse.Namespace) -> int:
     """Handle stats command."""
     try:
-        from autocron.dashboard import Dashboard
+        from autocron.interface.dashboard import Dashboard
 
         dashboard = Dashboard()
 

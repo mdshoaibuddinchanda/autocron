@@ -62,16 +62,16 @@ def cleanup_global_state():
     yield
 
     # Reset global scheduler
-    from autocron.scheduler import reset_global_scheduler
+    from autocron.core.scheduler import reset_global_scheduler
 
     reset_global_scheduler()
 
     # Reset logger
-    from autocron.logger import reset_logger
+    from autocron.logging.logger import reset_logger
 
     reset_logger()
 
     # Reset notification manager
-    from autocron.notifications import reset_notification_manager
+    from autocron.interface.notifications import reset_notification_manager
 
     reset_notification_manager()

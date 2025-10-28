@@ -11,7 +11,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from typing import Any, Dict, Optional
 
-from autocron.utils import safe_import
+from autocron.core.utils import safe_import
 
 
 class NotificationError(Exception):

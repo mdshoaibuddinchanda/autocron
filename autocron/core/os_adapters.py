@@ -11,7 +11,13 @@ import tempfile
 from abc import ABC, abstractmethod
 from typing import List, Optional
 
-from autocron.utils import get_platform_info, is_linux, is_macos, is_windows, sanitize_task_name
+from autocron.core.utils import (
+    get_platform_info,
+    is_linux,
+    is_macos,
+    is_windows,
+    sanitize_task_name,
+)
 
 
 class OSAdapterError(Exception):

@@ -4,7 +4,7 @@ import time
 
 import pytest
 
-from autocron.scheduler import AutoCron, Task, schedule
+from autocron.core.scheduler import AutoCron, Task, schedule
 
 
 class TestTask:
@@ -276,7 +276,7 @@ class TestScheduleDecorator:
             executed.append(True)
 
         # Function should be registered
-        from autocron.scheduler import get_global_scheduler
+        from autocron.core.scheduler import get_global_scheduler
 
         scheduler = get_global_scheduler()
 
@@ -290,7 +290,7 @@ class TestScheduleDecorator:
         def my_task():
             pass
 
-        from autocron.scheduler import get_global_scheduler
+        from autocron.core.scheduler import get_global_scheduler
 
         scheduler = get_global_scheduler()
 
@@ -372,7 +372,7 @@ class TestAdvancedScheduler:
 
     def test_task_repr(self):
         """Test task string representation."""
-        from autocron.scheduler import Task
+        from autocron.core.scheduler import Task
 
         task = Task(name="test_task", func=lambda: None, every="5m")
         repr_str = repr(task)

@@ -8,7 +8,7 @@ from pathlib import Path
 import pytest
 import yaml
 
-from autocron.scheduler import AutoCron, SchedulingError
+from autocron.core.scheduler import AutoCron, SchedulingError
 
 
 class TestTaskPersistence:

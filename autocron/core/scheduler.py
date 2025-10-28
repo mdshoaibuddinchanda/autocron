@@ -19,25 +19,25 @@ from functools import wraps
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Union
 
-from autocron.logger import get_logger
-from autocron.notifications import get_notification_manager
-from autocron.os_adapters import OSAdapter, OSAdapterError, get_os_adapter
-from autocron.utils import (
+from autocron.core.os_adapters import OSAdapter, OSAdapterError, get_os_adapter
+from autocron.core.utils import (
     calculate_retry_delay,
     get_next_run_time,
     parse_interval,
     validate_cron_expression,
 )
+from autocron.interface.notifications import get_notification_manager
+from autocron.logging.logger import get_logger
 
 # Optional analytics import
 try:
-    from autocron.dashboard import TaskAnalytics
+    from autocron.interface.dashboard import TaskAnalytics
 
     ANALYTICS_AVAILABLE = True
 except ImportError:
     ANALYTICS_AVAILABLE = False
     if TYPE_CHECKING:
-        from autocron.dashboard import TaskAnalytics
+        from autocron.interface.dashboard import TaskAnalytics
     else:
         TaskAnalytics = None  # type: ignore
 

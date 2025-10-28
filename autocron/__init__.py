@@ -2,11 +2,20 @@
 AutoCron - Automate scripts with zero setup.
 
 A cross-platform Python library for scheduling tasks with minimal configuration.
+
+Note: As of v1.3.0, the internal structure has been reorganized into subpackages:
+- autocron.core: Core scheduling logic and utilities
+- autocron.interface: CLI, dashboard, and notifications
+- autocron.logging: Logging infrastructure
+- autocron.config: Configuration management (future)
+
+For backward compatibility, all public APIs remain importable from autocron directly.
 """
 
 from typing import TYPE_CHECKING
 
-from autocron.scheduler import (
+# Import from new structure (v1.3.0+)
+from autocron.core.scheduler import (
     AutoCron,
     SchedulingError,
     Task,
@@ -20,13 +29,19 @@ from autocron.version import __version__
 
 # Optional dashboard imports
 try:
-    from autocron.dashboard import Dashboard, TaskAnalytics, live_monitor, show_dashboard, show_task
+    from autocron.interface.dashboard import (
+        Dashboard,
+        TaskAnalytics,
+        live_monitor,
+        show_dashboard,
+        show_task,
+    )
 
     _dashboard_available = True
 except ImportError:
     _dashboard_available = False
     if TYPE_CHECKING:
-        from autocron.dashboard import (
+        from autocron.interface.dashboard import (
             Dashboard,
             TaskAnalytics,
             live_monitor,

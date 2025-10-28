@@ -2,8 +2,8 @@
 
 import pytest
 
-from autocron.os_adapters import UnixAdapter, WindowsAdapter, get_os_adapter
-from autocron.utils import is_linux, is_macos, is_windows
+from autocron.core.os_adapters import UnixAdapter, WindowsAdapter, get_os_adapter
+from autocron.core.utils import is_linux, is_macos, is_windows
 
 
 class TestGetOSAdapter:

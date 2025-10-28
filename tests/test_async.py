@@ -5,7 +5,7 @@ import time
 
 import pytest
 
-from autocron.scheduler import AutoCron, TaskExecutionError
+from autocron.core.scheduler import AutoCron, TaskExecutionError
 
 
 class TestAsyncTasks:
@@ -260,7 +260,7 @@ class TestAsyncTaskIntegration:
 
     def test_async_decorator(self, scheduler):
         """Test @schedule decorator with async functions."""
-        from autocron.scheduler import get_global_scheduler, reset_global_scheduler, schedule
+        from autocron.core.scheduler import get_global_scheduler, reset_global_scheduler, schedule
 
         # Reset any existing global scheduler
         reset_global_scheduler()

@@ -74,7 +74,7 @@ class TestIntegration:
             executed.append(True)
 
         # Get global scheduler and start
-        from autocron.scheduler import get_global_scheduler, start_scheduler
+        from autocron.core.scheduler import get_global_scheduler, start_scheduler
 
         scheduler = get_global_scheduler()
         assert scheduler is not None

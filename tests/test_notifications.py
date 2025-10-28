@@ -2,7 +2,7 @@
 
 import pytest
 
-from autocron.notifications import (
+from autocron.interface.notifications import (
     EmailNotifier,
     NotificationError,
     NotificationManager,

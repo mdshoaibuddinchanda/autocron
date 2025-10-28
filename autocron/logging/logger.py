@@ -10,7 +10,7 @@ import os
 from logging.handlers import RotatingFileHandler
 from typing import Optional
 
-from autocron.utils import ensure_directory, get_default_log_path
+from autocron.core.utils import ensure_directory, get_default_log_path
 
 
 class AutoCronLogger:

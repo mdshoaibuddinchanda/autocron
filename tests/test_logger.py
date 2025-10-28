@@ -3,7 +3,7 @@
 import os
 import tempfile
 
-from autocron.logger import AutoCronLogger, get_logger, reset_logger
+from autocron.logging.logger import AutoCronLogger, get_logger, reset_logger
 
 
 class TestAutoCronLogger:
