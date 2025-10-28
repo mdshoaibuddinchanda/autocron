@@ -136,4 +136,11 @@ Thumbs.db
 # AutoCron specific
 autocron_logs/
 *.autocron.lock
+
+# Test and quality reports (generated files)
 bandit-report.json
+bandit_report.json
+pylint_report.json
+coverage.json
+test_results.txt
+*.log
