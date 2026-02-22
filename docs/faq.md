@@ -41,6 +41,7 @@ pip install autocron[notifications]
 ### Can I use AutoCron without installing?
 
 Yes, you can run from source:
+
 ```bash
 git clone https://github.com/mdshoaibuddinchanda/autocron.git
 cd autocron
@@ -62,15 +63,15 @@ from autocron import schedule
 
 @schedule(every='5m')
 def my_task():
-    print("Runs every 5 minutes")
+ print("Runs every 5 minutes")
 ```
 
 ### How do I schedule a task at a specific time?
 
 ```python
-@schedule(cron='0 9 * * *')  # Every day at 9 AM
+@schedule(cron='0 9 * * *') # Every day at 9 AM
 def morning_task():
-    print("Good morning!")
+ print("Good morning!")
 ```
 
 ### Can I schedule multiple tasks?
@@ -80,15 +81,15 @@ Yes! Just decorate multiple functions:
 ```python
 @schedule(every='1m')
 def task1():
-    pass
+ pass
 
 @schedule(every='5m')
 def task2():
-    pass
+ pass
 
 @schedule(cron='0 * * * *')
 def task3():
-    pass
+ pass
 ```
 
 ### How do I stop a running scheduler?
@@ -126,7 +127,8 @@ scheduler = AutoCron(max_workers=10)
 ### What cron expressions can I use?
 
 Standard cron format (5 fields):
-```
+
+```text
 * * * * *
 │ │ │ │ └─ Day of week (0-6)
 │ │ │ └─── Month (1-12)
@@ -136,6 +138,7 @@ Standard cron format (5 fields):
 ```
 
 Examples:
+
 - `'0 9 * * *'` - Every day at 9 AM
 - `'*/15 * * * *'` - Every 15 minutes
 - `'0 0 * * 0'` - Every Sunday at midnight
@@ -156,7 +159,7 @@ Yes!
 ```python
 @schedule(every='1h', retries=3, retry_delay=60)
 def task_with_retries():
-    pass
+ pass
 ```
 
 ### Can I set execution timeouts?
@@ -164,9 +167,9 @@ def task_with_retries():
 Yes!
 
 ```python
-@schedule(every='30m', timeout=300)  # 5 minutes
+@schedule(every='30m', timeout=300) # 5 minutes
 def time_limited_task():
-    pass
+ pass
 ```
 
 ### Does it support notifications?
@@ -176,7 +179,7 @@ Yes, desktop and email notifications:
 ```python
 @schedule(every='1h', notify='desktop')
 def task_with_notification():
-    pass
+ pass
 ```
 
 ### Can I get notified on success/failure?
@@ -185,12 +188,12 @@ Yes, use callbacks:
 
 ```python
 @schedule(
-    every='1h',
-    on_success=lambda: print("Success!"),
-    on_failure=lambda e: print(f"Failed: {e}")
+ every='1h',
+ on_success=lambda: print("Success!"),
+ on_failure=lambda e: print(f"Failed: {e}")
 )
 def my_task():
-    pass
+ pass
 ```
 
 ### Can I schedule Python scripts?
@@ -199,9 +202,9 @@ Yes!
 
 ```python
 scheduler.add_task(
-    name="backup",
-    script='backup.py',
-    every='1h'
+ name="backup",
+ script='backup.py',
+ every='1h'
 )
 ```
 
@@ -212,6 +215,7 @@ scheduler.add_task(
 ### My task isn't running
 
 **Check:**
+
 1. Is the scheduler started? (`scheduler.start()`)
 2. Is the time format correct?
 3. Check logs for errors
@@ -238,9 +242,10 @@ python -c "import sys; print(sys.path)"
 - Check for unhandled exceptions
 - Use `try/except` in your tasks
 - Enable debug logging:
-  ```python
-  scheduler = AutoCron(log_level='DEBUG')
-  ```
+
+ ```python
+ scheduler = AutoCron(log_level='DEBUG')
+ ```
 
 ### Desktop notifications not working
 
@@ -252,6 +257,7 @@ pip install autocron[notifications]
 ### Email notifications failing
 
 Check:
+
 1. SMTP credentials are correct
 2. Port is correct (usually 587 for TLS)
 3. Less secure app access enabled (Gmail)
@@ -264,6 +270,7 @@ Check:
 ### How many tasks can I schedule?
 
 There's no hard limit, but consider:
+
 - System resources
 - Task frequency
 - Execution time
@@ -279,10 +286,10 @@ No, AutoCron is lightweight and uses minimal CPU when idle.
 Yes, but use timeouts to prevent hanging:
 
 ```python
-@schedule(every='1h', timeout=3600)  # 1 hour timeout
+@schedule(every='1h', timeout=3600) # 1 hour timeout
 def long_task():
-    # Long-running code
-    pass
+ # Long-running code
+ pass
 ```
 
 ---
@@ -295,17 +302,18 @@ Yes, create `autocron.yaml`:
 
 ```yaml
 tasks:
-  - name: my_task
-    script: task.py
-    schedule: "*/5 * * * *"
-    retries: 3
+ - name: my_task
+ script: task.py
+ schedule: "*/5 * * * *"
+ retries: 3
 
 logging:
-  level: INFO
-  path: ./logs/autocron.log
+ level: INFO
+ path: ./logs/autocron.log
 ```
 
 Load it:
+
 ```python
 scheduler = AutoCron.from_config('autocron.yaml')
 ```
@@ -315,6 +323,7 @@ scheduler = AutoCron.from_config('autocron.yaml')
 Default: `./autocron.log`
 
 Customize:
+
 ```python
 scheduler = AutoCron(log_path='/var/log/autocron.log')
 ```
@@ -336,6 +345,7 @@ Levels: `DEBUG`, `INFO`, `WARNING`, `ERROR`
 Yes! AutoCron is production-ready.
 
 **Best practices:**
+
 - Use virtual environments
 - Set up proper logging
 - Configure retries
@@ -345,6 +355,7 @@ Yes! AutoCron is production-ready.
 ### How do I run AutoCron as a service?
 
 **Linux (systemd):**
+
 ```bash
 # Create /etc/systemd/system/autocron.service
 sudo systemctl enable autocron
@@ -352,11 +363,13 @@ sudo systemctl start autocron
 ```
 
 **Windows (Task Scheduler):**
+
 ```powershell
 schtasks /create /tn "AutoCron" /tr "python scheduler.py" /sc onstart
 ```
 
 **macOS (launchd):**
+
 ```bash
 # Create ~/Library/LaunchAgents/com.autocron.plist
 launchctl load ~/Library/LaunchAgents/com.autocron.plist
@@ -382,8 +395,8 @@ Use environment variables:
 import os
 
 email_config = {
-    'password': os.environ['EMAIL_PASSWORD'],
-    'from_email': os.environ['FROM_EMAIL']
+ 'password': os.environ['EMAIL_PASSWORD'],
+ 'from_email': os.environ['FROM_EMAIL']
 }
 ```
 
@@ -393,31 +406,31 @@ email_config = {
 
 ### AutoCron vs cron (Linux)
 
-| Feature | AutoCron | cron |
-|---------|----------|------|
-| Cross-platform | ✅ Yes | ❌ Linux/Unix only |
-| Python API | ✅ Yes | ❌ Shell only |
-| Retries | ✅ Built-in | ❌ Manual |
-| Notifications | ✅ Built-in | ❌ Manual |
-| Easy syntax | ✅ Simple | ❌ Complex |
+| Feature        | AutoCron | cron            |
+|----------------|----------|-----------------|
+| Cross-platform | Yes      | Linux/Unix only |
+| Python API     | Yes      | Shell only      |
+| Retries        | Built-in | Manual          |
+| Notifications  | Built-in | Manual          |
+| Easy syntax    | Simple   | Complex         |
 
 ### AutoCron vs APScheduler
 
-| Feature | AutoCron | APScheduler |
-|---------|----------|-------------|
-| Simplicity | ✅ Very simple | ⚠️ Complex |
-| Setup | ✅ Zero config | ⚠️ Requires config |
-| Documentation | ✅ Clear | ⚠️ Dense |
-| OS Integration | ✅ Native | ❌ None |
+| Feature         | AutoCron    | APScheduler      |
+|-----------------|-------------|------------------|
+| Simplicity      | Very simple | ️ Complex         |
+| Setup           | Zero config | ️ Requires config |
+| Documentation   | Clear       | ️ Dense           |
+| OS Integration  | Native      | None             |
 
 ### AutoCron vs Celery
 
-| Feature | AutoCron | Celery |
-|---------|----------|--------|
-| Complexity | ✅ Simple | ❌ Complex |
-| Dependencies | ✅ Minimal | ❌ Requires broker |
-| Setup time | ✅ Minutes | ❌ Hours |
-| Use case | ✅ Scheduling | ✅ Task queue |
+| Feature      | AutoCron   | Celery          |
+|--------------|------------|-----------------|
+| Complexity   | Simple     | Complex         |
+| Dependencies | Minimal    | Requires broker |
+| Setup time   | Minutes    | Hours           |
+| Use case     | Scheduling | Task queue      |
 
 ---
 
@@ -430,9 +443,9 @@ Yes! As of v1.2.0, you can schedule async functions:
 ```python
 @schedule(every='5m')
 async def fetch_data():
-    async with aiohttp.ClientSession() as session:
-        data = await session.get('https://api.example.com')
-        return await data.json()
+ async with aiohttp.ClientSession() as session:
+ data = await session.get('https://api.example.com')
+ return await data.json()
 ```
 
 AutoCron automatically detects async functions and executes them properly.
@@ -443,7 +456,7 @@ Yes! Use task persistence (v1.2.0):
 
 ```python
 # Save tasks before shutdown
-scheduler.save_tasks()  # Saves to ~/.autocron/tasks.yaml
+scheduler.save_tasks() # Saves to ~/.autocron/tasks.yaml
 
 # After restart, load tasks back
 scheduler.load_tasks()
@@ -464,12 +477,12 @@ Yes! Mix them freely:
 ```python
 @schedule(every='5m')
 def sync_task():
-    print("Sync task")
+ print("Sync task")
 
 @schedule(every='10m')
 async def async_task():
-    await asyncio.sleep(1)
-    print("Async task")
+ await asyncio.sleep(1)
+ print("Async task")
 ```
 
 ### Does the dashboard require additional installation?
@@ -486,9 +499,9 @@ pip install autocron-scheduler[all]
 
 ```bash
 # CLI
-autocron dashboard          # Summary view
-autocron stats task_name    # Task details
-autocron dashboard --live   # Live monitoring
+autocron dashboard # Summary view
+autocron stats task_name # Task details
+autocron dashboard --live # Live monitoring
 
 # Or in Python
 from autocron import show_dashboard
@@ -525,16 +538,16 @@ stats = analytics.get_task_stats("my_task")
 Functions contain code and closures that can't be serialized. Only script-based tasks can be saved:
 
 ```python
-# ❌ Can't be persisted
+# Can't be persisted
 @schedule(every='1h')
 def my_function():
-    pass
+ pass
 
-# ✅ Can be persisted
+# Can be persisted
 scheduler.add_task(
-    name="my_task",
-    script="my_script.py",
-    every="1h"
+ name="my_task",
+ script="my_script.py",
+ every="1h"
 )
 ```
 
@@ -560,6 +573,7 @@ Yes! See [CONTRIBUTING.md](../CONTRIBUTING.md)
 ### Is there a community?
 
 Join us on:
+
 - GitHub Discussions
 - Issue tracker
 
@@ -567,7 +581,7 @@ Join us on:
 
 ## Still Have Questions?
 
-- 📖 [Documentation](README.md)
-- 💬 [GitHub Discussions](https://github.com/mdshoaibuddinchanda/autocron/discussions)
-- 🐛 [Report Issues](https://github.com/mdshoaibuddinchanda/autocron/issues)
-- 📧 Email: mdshoaibuddinchanda@gmail.com
+- [Documentation](README.md)
+- [GitHub Discussions](https://github.com/mdshoaibuddinchanda/autocron/discussions)
+- [Report Issues](https://github.com/mdshoaibuddinchanda/autocron/issues)
+- Email: <mdshoaibuddinchanda@gmail.com>

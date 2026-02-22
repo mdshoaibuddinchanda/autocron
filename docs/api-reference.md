@@ -10,15 +10,16 @@ Main scheduler class for managing tasks.
 
 ```python
 class AutoCron:
-    def __init__(
-        self,
-        log_path: Optional[str] = None,
-        log_level: str = 'INFO',
-        max_workers: int = 5
-    )
+ def __init__(
+ self,
+ log_path: Optional[str] = None,
+ log_level: str = 'INFO',
+ max_workers: int = 5
+ )
 ```
 
 **Parameters:**
+
 - `log_path` (str, optional): Path to log file. Default: `./autocron.log`
 - `log_level` (str): Logging level. Options: `DEBUG`, `INFO`, `WARNING`, `ERROR`. Default: `INFO`
 - `max_workers` (int): Maximum concurrent tasks. Default: `5`
@@ -29,24 +30,25 @@ class AutoCron:
 
 ```python
 def add_task(
-    self,
-    name: str,
-    func: Optional[Callable] = None,
-    script: Optional[str] = None,
-    every: Optional[str] = None,
-    cron: Optional[str] = None,
-    retries: int = 0,
-    retry_delay: int = 5,
-    timeout: Optional[int] = None,
-    notify: Optional[str] = None,
-    email_config: Optional[Dict] = None,
-    on_success: Optional[Callable] = None,
-    on_failure: Optional[Callable] = None,
-    **kwargs
+ self,
+ name: str,
+ func: Optional[Callable] = None,
+ script: Optional[str] = None,
+ every: Optional[str] = None,
+ cron: Optional[str] = None,
+ retries: int = 0,
+ retry_delay: int = 5,
+ timeout: Optional[int] = None,
+ notify: Optional[str] = None,
+ email_config: Optional[Dict] = None,
+ on_success: Optional[Callable] = None,
+ on_failure: Optional[Callable] = None,
+ **kwargs
 ) -> str
 ```
 
 **Parameters:**
+
 - `name` (str): Unique task identifier
 - `func` (Callable, optional): Python function to execute
 - `script` (str, optional): Python script path to execute
@@ -63,14 +65,15 @@ def add_task(
 **Returns:** Task ID (str)
 
 **Example:**
+
 ```python
 scheduler = AutoCron()
 task_id = scheduler.add_task(
-    name="backup",
-    func=backup_data,
-    every='1h',
-    retries=3,
-    notify='desktop'
+ name="backup",
+ func=backup_data,
+ every='1h',
+ retries=3,
+ notify='desktop'
 )
 ```
 
@@ -83,6 +86,7 @@ def remove_task(self, task_id: str) -> bool
 Remove a scheduled task.
 
 **Parameters:**
+
 - `task_id` (str): Task identifier
 
 **Returns:** `True` if successful, `False` otherwise
@@ -96,6 +100,7 @@ def start(self, blocking: bool = False) -> None
 Start the scheduler.
 
 **Parameters:**
+
 - `blocking` (bool): If `True`, blocks until interrupted. Default: `False`
 
 #### stop()
@@ -125,6 +130,7 @@ def save_tasks(self, path: Optional[str] = None) -> str
 Save all tasks to a file for persistence across restarts.
 
 **Parameters:**
+
 - `path` (str, optional): Path to save file (YAML or JSON). Default: `~/.autocron/tasks.yaml`
 
 **Returns:** Path where tasks were saved
@@ -132,13 +138,14 @@ Save all tasks to a file for persistence across restarts.
 **Note:** Only script-based tasks can be persisted. Function-based tasks must be registered programmatically.
 
 **Example:**
+
 ```python
 scheduler = AutoCron()
 scheduler.add_task(name="backup", script="backup.py", every="1h")
 
 # Save tasks
-scheduler.save_tasks()  # Saves to ~/.autocron/tasks.yaml
-scheduler.save_tasks("my_tasks.json")  # Custom location
+scheduler.save_tasks() # Saves to ~/.autocron/tasks.yaml
+scheduler.save_tasks("my_tasks.json") # Custom location
 ```
 
 #### load_tasks() 🆕 v1.2.0
@@ -150,12 +157,14 @@ def load_tasks(self, path: Optional[str] = None, replace: bool = False) -> int
 Load tasks from a persistence file.
 
 **Parameters:**
+
 - `path` (str, optional): Path to load file. Default: `~/.autocron/tasks.yaml`
 - `replace` (bool): If `True`, clear existing tasks. If `False`, merge. Default: `False`
 
 **Returns:** Number of tasks loaded
 
 **Example:**
+
 ```python
 scheduler = AutoCron()
 
@@ -176,6 +185,7 @@ def from_config(cls, config_path: str) -> 'AutoCron'
 Create scheduler from YAML configuration file.
 
 **Parameters:**
+
 - `config_path` (str): Path to YAML config file
 
 **Returns:** Configured `AutoCron` instance
@@ -188,20 +198,21 @@ Task representation class.
 
 ```python
 class Task:
-    def __init__(
-        self,
-        name: str,
-        func: Optional[Callable],
-        script: Optional[str],
-        schedule_expr: str,
-        retries: int = 0,
-        retry_delay: int = 5,
-        timeout: Optional[int] = None,
-        **kwargs
-    )
+ def __init__(
+ self,
+ name: str,
+ func: Optional[Callable],
+ script: Optional[str],
+ schedule_expr: str,
+ retries: int = 0,
+ retry_delay: int = 5,
+ timeout: Optional[int] = None,
+ **kwargs
+ )
 ```
 
 **Attributes:**
+
 - `id` (str): Unique task identifier
 - `name` (str): Task name
 - `func` (Callable): Function to execute
@@ -244,15 +255,15 @@ Decorator for scheduling functions (supports both sync and async!).
 
 ```python
 def schedule(
-    every: Optional[str] = None,
-    cron: Optional[str] = None,
-    retries: int = 0,
-    retry_delay: int = 5,
-    timeout: Optional[int] = None,
-    notify: Optional[str] = None,
-    email_config: Optional[Dict] = None,
-    on_success: Optional[Callable] = None,
-    on_failure: Optional[Callable] = None
+ every: Optional[str] = None,
+ cron: Optional[str] = None,
+ retries: int = 0,
+ retry_delay: int = 5,
+ timeout: Optional[int] = None,
+ notify: Optional[str] = None,
+ email_config: Optional[Dict] = None,
+ on_success: Optional[Callable] = None,
+ on_failure: Optional[Callable] = None
 ) -> Callable
 ```
 
@@ -261,20 +272,21 @@ def schedule(
 **Async Support** 🆕 v1.2.0: Now automatically detects and handles async functions!
 
 **Example:**
+
 ```python
 from autocron import schedule
 
 # Synchronous task
 @schedule(every='5m', retries=2)
 def my_task():
-    print("Sync task running!")
+ print("Sync task running!")
 
 # Asynchronous task (NEW in v1.2!)
 @schedule(every='10m')
 async def async_task():
-    async with aiohttp.ClientSession() as session:
-        data = await session.get('https://api.example.com')
-        return await data.json()
+ async with aiohttp.ClientSession() as session:
+ data = await session.get('https://api.example.com')
+ return await data.json()
 ```
 
 ---
@@ -290,6 +302,7 @@ def show_dashboard() -> None
 Display task summary dashboard in terminal.
 
 **Example:**
+
 ```python
 from autocron import show_dashboard
 
@@ -305,9 +318,11 @@ def show_task(name: str) -> None
 Display detailed analytics for a specific task.
 
 **Parameters:**
+
 - `name` (str): Task name
 
 **Example:**
+
 ```python
 from autocron import show_task
 
@@ -318,11 +333,11 @@ show_task("backup_task")
 
 ```python
 class Dashboard:
-    def __init__(self, analytics: TaskAnalytics)
-    
-    def show_summary(self) -> None
-    def show_task_details(self, task_name: str) -> None
-    def show_live_monitor(self, refresh_interval: int = 2) -> None
+ def __init__(self, analytics: TaskAnalytics)
+ 
+ def show_summary(self) -> None
+ def show_task_details(self, task_name: str) -> None
+ def show_live_monitor(self, refresh_interval: int = 2) -> None
 ```
 
 For custom dashboard implementations.
@@ -331,20 +346,20 @@ For custom dashboard implementations.
 
 ```python
 class TaskAnalytics:
-    def __init__(self, storage_path: Optional[str] = None)
-    
-    def record_execution(
-        self,
-        task_name: str,
-        success: bool,
-        duration: float,
-        error: Optional[str] = None,
-        retry_count: int = 0
-    ) -> None
-    
-    def get_task_stats(self, task_name: str) -> Dict[str, Any]
-    def get_all_tasks(self) -> List[str]
-    def get_recommendations(self, task_name: str) -> List[str]
+ def __init__(self, storage_path: Optional[str] = None)
+ 
+ def record_execution(
+ self,
+ task_name: str,
+ success: bool,
+ duration: float,
+ error: Optional[str] = None,
+ retry_count: int = 0
+ ) -> None
+ 
+ def get_task_stats(self, task_name: str) -> Dict[str, Any]
+ def get_all_tasks(self) -> List[str]
+ def get_recommendations(self, task_name: str) -> List[str]
 ```
 
 For custom analytics implementations.
@@ -362,6 +377,7 @@ def start_scheduler(blocking: bool = True) -> None
 Start the global scheduler with decorated tasks.
 
 **Parameters:**
+
 - `blocking` (bool): Block until interrupted. Default: `True`
 
 ### reset_global_scheduler()
@@ -385,15 +401,17 @@ def parse_interval(interval: str) -> int
 Parse interval string to seconds.
 
 **Parameters:**
+
 - `interval` (str): Interval string (e.g., `'5m'`, `'2h'`, `'30s'`)
 
 **Returns:** Seconds (int)
 
 **Example:**
+
 ```python
 from autocron.utils import parse_interval
 
-seconds = parse_interval('5m')  # Returns 300
+seconds = parse_interval('5m') # Returns 300
 ```
 
 ### parse_cron()
@@ -405,6 +423,7 @@ def parse_cron(cron_expr: str) -> croniter
 Parse cron expression.
 
 **Parameters:**
+
 - `cron_expr` (str): Cron expression
 
 **Returns:** `croniter` object
@@ -417,15 +436,16 @@ Parse cron expression.
 
 ```python
 def get_logger(
-    name: str = 'autocron',
-    log_path: Optional[str] = None,
-    log_level: str = 'INFO'
+ name: str = 'autocron',
+ log_path: Optional[str] = None,
+ log_level: str = 'INFO'
 ) -> logging.Logger
 ```
 
 Get configured logger instance.
 
 **Parameters:**
+
 - `name` (str): Logger name. Default: `'autocron'`
 - `log_path` (str, optional): Log file path
 - `log_level` (str): Logging level. Default: `'INFO'`
@@ -440,21 +460,21 @@ Get configured logger instance.
 
 ```python
 class NotificationManager:
-    def __init__(self)
-    
-    def send_desktop(self, title: str, message: str) -> None
-    
-    def send_email(
-        self,
-        subject: str,
-        body: str,
-        smtp_server: str,
-        smtp_port: int,
-        from_email: str,
-        to_email: str,
-        password: str,
-        use_tls: bool = True
-    ) -> None
+ def __init__(self)
+ 
+ def send_desktop(self, title: str, message: str) -> None
+ 
+ def send_email(
+ self,
+ subject: str,
+ body: str,
+ smtp_server: str,
+ smtp_port: int,
+ from_email: str,
+ to_email: str,
+ password: str,
+ use_tls: bool = True
+ ) -> None
 ```
 
 **Methods:**
@@ -464,6 +484,7 @@ class NotificationManager:
 Send desktop notification.
 
 **Parameters:**
+
 - `title` (str): Notification title
 - `message` (str): Notification body
 
@@ -472,6 +493,7 @@ Send desktop notification.
 Send email notification.
 
 **Parameters:**
+
 - `subject` (str): Email subject
 - `body` (str): Email body
 - `smtp_server` (str): SMTP server address
@@ -489,28 +511,28 @@ Send email notification.
 
 ```python
 class AutoCronError(Exception):
-    """Base exception for AutoCron"""
+ """Base exception for AutoCron"""
 ```
 
 ### TaskExecutionError
 
 ```python
 class TaskExecutionError(AutoCronError):
-    """Raised when task execution fails"""
+ """Raised when task execution fails"""
 ```
 
 ### ScheduleError
 
 ```python
 class ScheduleError(AutoCronError):
-    """Raised when schedule parsing fails"""
+ """Raised when schedule parsing fails"""
 ```
 
 ### OSAdapterError
 
 ```python
 class OSAdapterError(AutoCronError):
-    """Raised when OS adapter operation fails"""
+ """Raised when OS adapter operation fails"""
 ```
 
 ---
@@ -555,28 +577,28 @@ YAML configuration file structure:
 
 ```yaml
 tasks:
-  - name: string (required)
-    func: string (optional, function name)
-    script: string (optional, file path)
-    schedule: string (required, cron or interval)
-    retries: integer (optional, default: 0)
-    retry_delay: integer (optional, default: 5)
-    timeout: integer (optional)
-    notify: string (optional: 'desktop' or 'email')
-    email:
-      smtp_server: string
-      smtp_port: integer
-      from_email: string
-      to_email: string
-      password: string
-      use_tls: boolean (default: true)
+ - name: string (required)
+ func: string (optional, function name)
+ script: string (optional, file path)
+ schedule: string (required, cron or interval)
+ retries: integer (optional, default: 0)
+ retry_delay: integer (optional, default: 5)
+ timeout: integer (optional)
+ notify: string (optional: 'desktop' or 'email')
+ email:
+ smtp_server: string
+ smtp_port: integer
+ from_email: string
+ to_email: string
+ password: string
+ use_tls: boolean (default: true)
 
 logging:
-  level: string (default: 'INFO')
-  path: string (default: './autocron.log')
+ level: string (default: 'INFO')
+ path: string (default: './autocron.log')
 
 scheduler:
-  max_workers: integer (default: 5)
+ max_workers: integer (default: 5)
 ```
 
 ---
@@ -586,9 +608,9 @@ scheduler:
 ```python
 from autocron import __version__, __author__, __email__
 
-print(__version__)  # '1.0.0'
-print(__author__)   # 'MD Shoaib Uddin Chanda'
-print(__email__)    # 'mdshoaibuddinchanda@gmail.com'
+print(__version__) # '1.0.0'
+print(__author__) # 'MD Shoaib Uddin Chanda'
+print(__email__) # 'mdshoaibuddinchanda@gmail.com'
 ```
 
 ---

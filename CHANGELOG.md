@@ -14,47 +14,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.2.0] - 2025-10-27
 
-### Added - 🚀 Reliability, Modern Python & Security Features
+### Added - Reliability, Modern Python & Security Features
 
-#### Safe Mode (Security & Resource Control) 🔒
+#### Safe Mode (Security & Resource Control) 
 - **Sandboxed Execution**: Run tasks in isolated subprocesses
-  - Process isolation prevents task failures from affecting parent
-  - Resource limits (memory, CPU) on Unix/Linux/Mac
-  - Timeout enforcement at OS level
-  - Output sanitization (10KB limit)
-  - Environment variable `AUTOCRON_SAFE_MODE=1` for detection
+ - Process isolation prevents task failures from affecting parent
+ - Resource limits (memory, CPU) on Unix/Linux/Mac
+ - Timeout enforcement at OS level
+ - Output sanitization (10KB limit)
+ - Environment variable `AUTOCRON_SAFE_MODE=1` for detection
 - **Resource Limits**:
-  - `safe_mode=True` - Enable subprocess isolation
-  - `max_memory_mb=256` - Memory limit in MB (Unix only)
-  - `max_cpu_percent=50` - CPU usage limit (Unix only)
-  - Automatic cleanup on violations
+ - `safe_mode=True` - Enable subprocess isolation
+ - `max_memory_mb=256` - Memory limit in MB (Unix only)
+ - `max_cpu_percent=50` - CPU usage limit (Unix only)
+ - Automatic cleanup on violations
 - **Use Cases**:
-  - Running untrusted or user-provided scripts
-  - Production environments with strict SLAs
-  - Multi-tenant task scheduling
-  - Tasks with unknown resource requirements
+ - Running untrusted or user-provided scripts
+ - Production environments with strict SLAs
+ - Multi-tenant task scheduling
+ - Tasks with unknown resource requirements
 - **Platform Support**:
-  - Full resource limits on Unix/Linux/Mac
-  - Subprocess isolation on all platforms including Windows
-  - Timeout enforcement cross-platform
+ - Full resource limits on Unix/Linux/Mac
+ - Subprocess isolation on all platforms including Windows
+ - Timeout enforcement cross-platform
 
 #### Task Persistence (Durability)
 - **Save/Load Tasks**: Persist task configuration and state across system restarts
-  - `scheduler.save_tasks(path)` - Save all script-based tasks to YAML/JSON
-  - `scheduler.load_tasks(path)` - Load tasks from file (merge or replace mode)
-  - Default location: `~/.autocron/tasks.yaml`
-  - Preserves task state: run counts, schedules, last/next run times
-  - Safe mode settings are persisted
-  - Support for both YAML and JSON formats
+ - `scheduler.save_tasks(path)` - Save all script-based tasks to YAML/JSON
+ - `scheduler.load_tasks(path)` - Load tasks from file (merge or replace mode)
+ - Default location: `~/.autocron/tasks.yaml`
+ - Preserves task state: run counts, schedules, last/next run times
+ - Safe mode settings are persisted
+ - Support for both YAML and JSON formats
 - **Task State Recovery**: Automatic recovery of execution history after restart
 - **Function vs Script**: Only script-based tasks can be persisted (design choice)
 
 #### Async/Await Support
 - **Native Async Task Execution**: Schedule async functions alongside sync functions
-  - Automatic detection of coroutine functions
-  - No code changes needed - works with existing `@schedule` decorator
-  - Mixed sync/async tasks in same scheduler
-  - Efficient execution without blocking
+ - Automatic detection of coroutine functions
+ - No code changes needed - works with existing `@schedule` decorator
+ - Mixed sync/async tasks in same scheduler
+ - Efficient execution without blocking
 - **Async Timeout Support**: Timeouts work for both sync and async tasks
 - **Async Retries**: Full retry logic for async tasks
 - **Async Callbacks**: Success/failure callbacks work with async functions
@@ -72,16 +72,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Testing
 - Added 11 new tests for safe mode (`test_safe_mode.py`)
-  - Basic execution, memory limits, timeouts, isolation
-  - Persistence of safe mode settings
-  - Output sanitization, retries, default behavior
+ - Basic execution, memory limits, timeouts, isolation
+ - Persistence of safe mode settings
+ - Output sanitization, retries, default behavior
 - Added 15 new tests for persistence (`test_persistence.py`)
 - Added 14 new tests for async support (`test_async.py`)
 - Total: **124 tests** (up from 84)
 - Coverage improved:
-  - Overall: 41.42% with safe mode tests
-  - Scheduler: 48.22% (includes all execution paths)
-  - Critical security paths covered
+ - Overall: 41.42% with safe mode tests
+ - Scheduler: 48.22% (includes all execution paths)
+ - Critical security paths covered
 
 ### Documentation
 - Updated SECURITY.md with Safe Mode section and best practices
@@ -106,45 +106,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Why These Features Matter
 1. **Safe Mode** = Security & Stability
-   - Protects system from malicious or buggy scripts
-   - Prevents resource exhaustion
-   - Isolates failures
-   - Production-ready task execution
-   
+ - Protects system from malicious or buggy scripts
+ - Prevents resource exhaustion
+ - Isolates failures
+ - Production-ready task execution
+ 
 2. **Persistence** = Production-Ready Reliability
-   - Tasks survive system restarts
-   - Configuration can be version controlled
-   - State recovery prevents duplicate executions
-   
+ - Tasks survive system restarts
+ - Configuration can be version controlled
+ - State recovery prevents duplicate executions
+ 
 3. **Async Support** = Modern Python Best Practices
-   - Work with async libraries (aiohttp, asyncpg, etc.)
-   - Efficient I/O-bound task execution
-   - No thread blocking for async operations
+ - Work with async libraries (aiohttp, asyncpg, etc.)
+ - Efficient I/O-bound task execution
+ - No thread blocking for async operations
 
 ## [1.1.0] - 2025-10-27
 
-### Added - 🎯 Hero Feature: Dashboard & Analytics
+### Added - Hero Feature: Dashboard & Analytics
 - **Interactive Dashboard**: Beautiful terminal dashboard with rich formatting
 - **Task Analytics**: Automatic execution tracking for all tasks
-  - Success/failure rates with visual indicators (✅⚠️❌)
-  - Average execution duration tracking
-  - Retry pattern analysis
-  - Last 100 executions stored in JSON database (~/.autocron/analytics.json)
+ - Success/failure rates with visual indicators (️)
+ - Average execution duration tracking
+ - Retry pattern analysis
+ - Last 100 executions stored in JSON database (~/.autocron/analytics.json)
 - **CLI Commands**:
-  - `autocron dashboard` - View task summary with metrics
-  - `autocron dashboard --live` - Real-time monitoring with auto-refresh
-  - `autocron stats <task>` - Detailed task analysis
-  - `autocron stats --export file.json` - Export analytics to JSON
+ - `autocron dashboard` - View task summary with metrics
+ - `autocron dashboard --live` - Real-time monitoring with auto-refresh
+ - `autocron stats <task>` - Detailed task analysis
+ - `autocron stats --export file.json` - Export analytics to JSON
 - **Smart Recommendations**: AI-powered suggestions based on execution patterns
-  - Low success rate warnings
-  - High retry rate detection
-  - Long duration alerts
-  - Recent failure pattern analysis
+ - Low success rate warnings
+ - High retry rate detection
+ - Long duration alerts
+ - Recent failure pattern analysis
 - **Programmatic API**:
-  - `show_dashboard()` - Display summary in code
-  - `show_task(name)` - Show specific task details
-  - `live_monitor()` - Start live monitoring
-  - `Dashboard` and `TaskAnalytics` classes for custom integrations
+ - `show_dashboard()` - Display summary in code
+ - `show_task(name)` - Show specific task details
+ - `live_monitor()` - Start live monitoring
+ - `Dashboard` and `TaskAnalytics` classes for custom integrations
 
 ### Changed
 - Scheduler now automatically tracks all task executions

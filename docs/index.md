@@ -2,7 +2,7 @@
 
 Welcome to AutoCron documentation!
 
-## 📖 Documentation Pages
+## Documentation Pages
 
 - **[Complete Guide](complete-guide.md)** – Comprehensive manual with all examples, production setup, and platform-specific instructions
 - **[Quick Start](quickstart.md)** – Get started in 5 minutes
@@ -57,16 +57,16 @@ from autocron import schedule, start_scheduler
 
 @schedule(every='5m')
 def my_task():
-    print("Running every 5 minutes!")
+ print("Running every 5 minutes!")
 
 # NEW in v1.2: Async support!
 @schedule(every='10m')
 async def async_task():
-    await fetch_data()
-    print("Async task complete!")
+ await fetch_data()
+ print("Async task complete!")
 
 if __name__ == '__main__':
-    start_scheduler()
+ start_scheduler()
 ```
 
 ### 2. Schedule a Script
@@ -76,13 +76,13 @@ from autocron import AutoCron
 
 scheduler = AutoCron()
 scheduler.add_task(
-    name='backup',
-    script='backup.py',
-    every='1h'
+ name='backup',
+ script='backup.py',
+ every='1h'
 )
 
 # NEW in v1.2: Save tasks for persistence
-scheduler.save_tasks()  # Survives system restarts!
+scheduler.save_tasks() # Survives system restarts!
 
 scheduler.start()
 ```
@@ -90,17 +90,17 @@ scheduler.start()
 ### 3. Using Cron Expressions
 
 ```python
-@schedule(cron='0 9 * * *')  # Daily at 9 AM
+@schedule(cron='0 9 * * *') # Daily at 9 AM
 def daily_report():
-    print("Generating report...")
+ print("Generating report...")
 ```
 
 ### 4. Monitor with Dashboard (v1.1+)
 
 ```bash
-autocron dashboard          # View all tasks
-autocron stats my_task      # Task analytics
-autocron dashboard --live   # Live monitoring
+autocron dashboard # View all tasks
+autocron stats my_task # Task analytics
+autocron dashboard --live # Live monitoring
 ```
 
 ## Core Concepts
@@ -108,30 +108,32 @@ autocron dashboard --live   # Live monitoring
 ### Scheduling Methods
 
 **Interval-based:**
+
 - `'30s'` - Every 30 seconds
 - `'5m'` - Every 5 minutes
 - `'2h'` - Every 2 hours
 - `'1d'` - Every day
 
 **Cron-based:**
+
 - `'0 9 * * *'` - Daily at 9 AM
 - `'*/15 * * * *'` - Every 15 minutes
 - `'0 0 * * 0'` - Weekly on Sunday
 
 ### Features
 
-- ✅ Cross-platform (Windows, Linux, macOS)
-- ✅ Zero configuration required
-- ✅ **Async/await support** (v1.2+)
-- ✅ **Task persistence** (v1.2+) - Survive system restarts
-- ✅ **Visual dashboard** (v1.1+) - Monitor tasks
-- ✅ **Smart analytics** (v1.1+) - Execution tracking
-- ✅ Automatic retries with exponential backoff
-- ✅ Comprehensive logging
-- ✅ Desktop and email notifications
-- ✅ Timeout support
-- ✅ Type hints and mypy support
-- ✅ CLI interface
+- Cross-platform (Windows, Linux, macOS)
+- Zero configuration required
+- **Async/await support** (v1.2+)
+- **Task persistence** (v1.2+) - Survive system restarts
+- **Visual dashboard** (v1.1+) - Monitor tasks
+- **Smart analytics** (v1.1+) - Execution tracking
+- Automatic retries with exponential backoff
+- Comprehensive logging
+- Desktop and email notifications
+- Timeout support
+- Type hints and mypy support
+- CLI interface
 
 ## API Reference
 
@@ -139,13 +141,13 @@ autocron dashboard --live   # Live monitoring
 
 ```python
 class AutoCron:
-    def __init__(
-        self,
-        log_path: Optional[str] = None,
-        log_level: str = "INFO",
-        max_workers: int = 4,
-        use_os_scheduler: bool = False
-    )
+ def __init__(
+ self,
+ log_path: Optional[str] = None,
+ log_level: str = "INFO",
+ max_workers: int = 4,
+ use_os_scheduler: bool = False
+ )
 ```
 
 **Methods:**
@@ -161,14 +163,14 @@ class AutoCron:
 
 ```python
 @schedule(
-    every: Optional[str] = None,
-    cron: Optional[str] = None,
-    retries: int = 0,
-    retry_delay: int = 60,
-    timeout: Optional[int] = None,
-    notify: Optional[Union[str, List[str]]] = None,
-    on_success: Optional[Callable] = None,
-    on_failure: Optional[Callable] = None
+ every: Optional[str] = None,
+ cron: Optional[str] = None,
+ retries: int = 0,
+ retry_delay: int = 60,
+ timeout: Optional[int] = None,
+ notify: Optional[Union[str, List[str]]] = None,
+ on_success: Optional[Callable] = None,
+ on_failure: Optional[Callable] = None
 )
 ```
 
@@ -178,15 +180,15 @@ Create `autocron.yaml`:
 
 ```yaml
 tasks:
-  - name: data_sync
-    script: sync.py
-    schedule: "*/30 * * * *"
-    retries: 3
-    notify: desktop
+ - name: data_sync
+ script: sync.py
+ schedule: "*/30 * * * *"
+ retries: 3
+ notify: desktop
 
 logging:
-  level: INFO
-  path: ./logs/autocron.log
+ level: INFO
+ path: ./logs/autocron.log
 ```
 
 Load with:
@@ -221,11 +223,11 @@ autocron start --config autocron.yaml
 
 ```python
 scheduler.add_task(
-    name='api_call',
-    func=call_api,
-    every='5m',
-    retries=5,
-    retry_delay=60  # Exponential backoff from 60s
+ name='api_call',
+ func=call_api,
+ every='5m',
+ retries=5,
+ retry_delay=60 # Exponential backoff from 60s
 )
 ```
 
@@ -234,25 +236,25 @@ scheduler.add_task(
 ```python
 # Desktop notifications
 scheduler.add_task(
-    name='monitor',
-    func=check_system,
-    every='1m',
-    notify='desktop'
+ name='monitor',
+ func=check_system,
+ every='1m',
+ notify='desktop'
 )
 
 # Email notifications
 scheduler.add_task(
-    name='backup',
-    func=backup_data,
-    cron='0 2 * * *',
-    notify='email',
-    email_config={
-        'smtp_server': 'smtp.gmail.com',
-        'smtp_port': 587,
-        'from_email': 'backup@example.com',
-        'to_email': 'admin@example.com',
-        'password': os.environ['EMAIL_PASSWORD']
-    }
+ name='backup',
+ func=backup_data,
+ cron='0 2 * * *',
+ notify='email',
+ email_config={
+ 'smtp_server': 'smtp.gmail.com',
+ 'smtp_port': 587,
+ 'from_email': 'backup@example.com',
+ 'to_email': 'admin@example.com',
+ 'password': os.environ['EMAIL_PASSWORD']
+ }
 )
 ```
 
@@ -260,18 +262,18 @@ scheduler.add_task(
 
 ```python
 def on_success_callback():
-    print("Task completed successfully!")
+ print("Task completed successfully!")
 
 def on_failure_callback(error):
-    print(f"Task failed: {error}")
-    # Send alert, log to monitoring system, etc.
+ print(f"Task failed: {error}")
+ # Send alert, log to monitoring system, etc.
 
 scheduler.add_task(
-    name='critical_task',
-    func=important_function,
-    every='10m',
-    on_success=on_success_callback,
-    on_failure=on_failure_callback
+ name='critical_task',
+ func=important_function,
+ every='10m',
+ on_success=on_success_callback,
+ on_failure=on_failure_callback
 )
 ```
 
@@ -279,10 +281,10 @@ scheduler.add_task(
 
 ```python
 scheduler.add_task(
-    name='long_task',
-    func=potentially_long_running,
-    every='1h',
-    timeout=300  # 5 minutes max
+ name='long_task',
+ func=potentially_long_running,
+ every='1h',
+ timeout=300 # 5 minutes max
 )
 ```
 
@@ -294,10 +296,10 @@ scheduler.add_task(
 import os
 
 email_config = {
-    'smtp_server': 'smtp.gmail.com',
-    'smtp_port': 587,
-    'from_email': os.environ['EMAIL_FROM'],
-    'password': os.environ['EMAIL_PASSWORD']
+ 'smtp_server': 'smtp.gmail.com',
+ 'smtp_port': 587,
+ 'from_email': os.environ['EMAIL_FROM'],
+ 'password': os.environ['EMAIL_PASSWORD']
 }
 ```
 
@@ -305,17 +307,17 @@ email_config = {
 
 ```python
 def my_task():
-    try:
-        # Your task logic
-        pass
-    except SpecificException as e:
-        # Handle specific errors
-        logging.error(f"Specific error: {e}")
-        raise
-    except Exception as e:
-        # Handle general errors
-        logging.error(f"Unexpected error: {e}")
-        raise
+ try:
+ # Your task logic
+ pass
+ except SpecificException as e:
+ # Handle specific errors
+ logging.error(f"Specific error: {e}")
+ raise
+ except Exception as e:
+ # Handle general errors
+ logging.error(f"Unexpected error: {e}")
+ raise
 ```
 
 ### 3. Use Absolute Paths for Scripts
@@ -348,8 +350,8 @@ assert result is not None
 # Then schedule it
 @schedule(every='5m')
 def my_task():
-    # Task logic
-    pass
+ # Task logic
+ pass
 ```
 
 ## Troubleshooting
@@ -384,10 +386,12 @@ which python
 ### Platform-Specific Issues
 
 **Windows:**
+
 - Run as Administrator for Task Scheduler access
 - Check Windows Event Viewer for errors
 
 **Linux/macOS:**
+
 - Verify cron service is running: `service cron status`
 - Check system logs: `journalctl -u cron`
 
@@ -407,7 +411,7 @@ scheduler.add_task(func=task, every='5m', timeout=300)
 
 ```python
 # Use appropriate log levels
-scheduler = AutoCron(log_level='INFO')  # Not DEBUG in production
+scheduler = AutoCron(log_level='INFO') # Not DEBUG in production
 
 # Rotate logs regularly
 logger = AutoCronLogger(max_bytes=10*1024*1024, backup_count=5)
@@ -417,13 +421,13 @@ logger = AutoCronLogger(max_bytes=10*1024*1024, backup_count=5)
 
 ```python
 def efficient_task():
-    # Clean up resources
-    try:
-        # Task logic
-        pass
-    finally:
-        # Cleanup code
-        pass
+ # Clean up resources
+ try:
+ # Task logic
+ pass
+ finally:
+ # Cleanup code
+ pass
 ```
 
 ## Examples
@@ -437,10 +441,10 @@ See the [examples](../examples/) directory for:
 
 ## Support
 
-- 📖 [Documentation](https://autocron.readthedocs.io)
-- 🐛 [Bug Reports](https://github.com/mdshoaibuddinchanda/autocron/issues)
-- 💬 [Discussions](https://github.com/mdshoaibuddinchanda/autocron/discussions)
-- 📧 Email: mdshoaibuddinchanda@gmail.com
+- [Documentation](https://autocron.readthedocs.io)
+- [Bug Reports](https://github.com/mdshoaibuddinchanda/autocron/issues)
+- [Discussions](https://github.com/mdshoaibuddinchanda/autocron/discussions)
+- Email: <mdshoaibuddinchanda@gmail.com>
 
 ## License
 
@@ -452,4 +456,4 @@ See [CONTRIBUTING.md](../CONTRIBUTING.md) for development guidelines.
 
 ---
 
-Made with ❤️ by the AutoCron team
+Made with ️ by the AutoCron team

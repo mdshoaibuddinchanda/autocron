@@ -8,63 +8,63 @@ version = "1.2.0"
 description = "Automate scripts with zero setup. Run Python tasks anytime, anywhere."
 readme = "README.md"
 authors = [
-    {name = "MD Shoaib Uddin Chanda", email = "mdshoaibuddinchanda@gmail.com"}
+ {name = "MD Shoaib Uddin Chanda", email = "mdshoaibuddinchanda@gmail.com"}
 ]
 maintainers = [
-    {name = "MD Shoaib Uddin Chanda", email = "mdshoaibuddinchanda@gmail.com"}
+ {name = "MD Shoaib Uddin Chanda", email = "mdshoaibuddinchanda@gmail.com"}
 ]
 license = {text = "MIT"}
 keywords = ["scheduler", "cron", "automation", "task", "periodic", "cross-platform"]
 classifiers = [
-    "Development Status :: 5 - Production/Stable",
-    "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13",
-    "Programming Language :: Python :: 3.14",
-    "Operating System :: OS Independent",
-    "Operating System :: Microsoft :: Windows",
-    "Operating System :: POSIX :: Linux",
-    "Operating System :: MacOS",
-    "Topic :: Software Development :: Libraries :: Python Modules",
-    "Topic :: System :: Monitoring",
-    "Topic :: Utilities",
+ "Development Status :: 5 - Production/Stable",
+ "Intended Audience :: Developers",
+ "License :: OSI Approved :: MIT License",
+ "Programming Language :: Python :: 3",
+ "Programming Language :: Python :: 3.10",
+ "Programming Language :: Python :: 3.11",
+ "Programming Language :: Python :: 3.12",
+ "Programming Language :: Python :: 3.13",
+ "Programming Language :: Python :: 3.14",
+ "Operating System :: OS Independent",
+ "Operating System :: Microsoft :: Windows",
+ "Operating System :: POSIX :: Linux",
+ "Operating System :: MacOS",
+ "Topic :: Software Development :: Libraries :: Python Modules",
+ "Topic :: System :: Monitoring",
+ "Topic :: Utilities",
 ]
 requires-python = ">=3.10"
 dependencies = [
-    "croniter>=1.4.0",
-    "python-crontab>=3.0.0; platform_system=='Linux' or platform_system=='Darwin'",
-    "pywin32>=305; platform_system=='Windows'",
-    "tqdm>=4.66.5",
-    "psutil>=5.9.0",
-    "pyyaml>=6.0",
+ "croniter>=1.4.0",
+ "python-crontab>=3.0.0; platform_system=='Linux' or platform_system=='Darwin'",
+ "pywin32>=305; platform_system=='Windows'",
+ "tqdm>=4.66.5",
+ "psutil>=5.9.0",
+ "pyyaml>=6.0",
 ]
 
 [project.optional-dependencies]
 dev = [
-    "pytest>=7.4.0",
-    "pytest-asyncio>=0.21.0",
-    "pytest-cov>=4.1.0",
-    "pytest-mock>=3.11.0",
-    "pytest-timeout>=2.1.0",
-    "black>=24.8.0",
-    "flake8>=6.1.0",
-    "mypy>=1.5.0",
-    "isort>=5.12.0",
-    "pylint>=2.17.0",
+ "pytest>=7.4.0",
+ "pytest-asyncio>=0.21.0",
+ "pytest-cov>=4.1.0",
+ "pytest-mock>=3.11.0",
+ "pytest-timeout>=2.1.0",
+ "black>=24.8.0",
+ "flake8>=6.1.0",
+ "mypy>=1.5.0",
+ "isort>=5.12.0",
+ "pylint>=2.17.0",
 ]
 notifications = [
-    "plyer>=2.1.0",
+ "plyer>=2.1.0",
 ]
 dashboard = [
-    "rich>=13.0.0",
+ "rich>=13.0.0",
 ]
 all = [
-    "plyer>=2.1.0",
-    "rich>=13.0.0",
+ "plyer>=2.1.0",
+ "rich>=13.0.0",
 ]
 
 [project.urls]
@@ -109,19 +109,19 @@ python_classes = ["Test*"]
 python_functions = ["test_*"]
 asyncio_mode = "auto"
 addopts = [
-    "--strict-markers",
-    "--cov=autocron",
-    "--cov-report=term-missing",
-    "--cov-report=html",
-    "--cov-report=xml",
+ "--strict-markers",
+ "--cov=autocron",
+ "--cov-report=term-missing",
+ "--cov-report=html",
+ "--cov-report=xml",
 ]
 markers = [
-    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
-    "integration: marks tests as integration tests",
-    "asyncio: marks tests as async tests",
-    "windows: marks tests that only run on Windows",
-    "linux: marks tests that only run on Linux",
-    "darwin: marks tests that only run on macOS",
+ "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+ "integration: marks tests as integration tests",
+ "asyncio: marks tests as async tests",
+ "windows: marks tests that only run on Windows",
+ "linux: marks tests that only run on Linux",
+ "darwin: marks tests that only run on macOS",
 ]
 
 [tool.coverage.run]
@@ -133,13 +133,13 @@ precision = 2
 show_missing = true
 skip_covered = false
 exclude_lines = [
-    "pragma: no cover",
-    "def __repr__",
-    "raise AssertionError",
-    "raise NotImplementedError",
-    "if __name__ == .__main__.:",
-    "if TYPE_CHECKING:",
-    "class .*\\bProtocol\\):",
-    "@(abc\\.)?abstractmethod",
-    "pass"
+ "pragma: no cover",
+ "def __repr__",
+ "raise AssertionError",
+ "raise NotImplementedError",
+ "if __name__ == .__main__.:",
+ "if TYPE_CHECKING:",
+ "class .*\\bProtocol\\):",
+ "@(abc\\.)?abstractmethod",
+ "pass"
 ]

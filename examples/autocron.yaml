@@ -2,52 +2,52 @@
 
 # Tasks to schedule
 tasks:
-  # Example 1: Data synchronization
-  - name: data_sync
-    script: ./scripts/sync_data.py
-    schedule: "*/30 * * * *"  # Every 30 minutes
-    retries: 3
-    notify: desktop
-    
-  # Example 2: Daily backup
-  - name: daily_backup
-    script: ./scripts/backup.py
-    schedule: "0 2 * * *"  # Daily at 2 AM
-    retries: 5
-    notify: email
-    email:
-      smtp_server: smtp.gmail.com
-      smtp_port: 587
-      from_email: backup@example.com
-      to_email: admin@example.com
-      password: your_password_here
-      use_tls: true
-  
-  # Example 3: Hourly cleanup
-  - name: cleanup
-    script: ./scripts/cleanup.py
-    schedule: "0 * * * *"  # Every hour
-    retries: 2
-  
-  # Example 4: Weekly report
-  - name: weekly_report
-    script: ./scripts/generate_report.py
-    schedule: "0 9 * * 1"  # Monday at 9 AM
-    retries: 3
-    notify: email
-    email:
-      smtp_server: smtp.gmail.com
-      smtp_port: 587
-      from_email: reports@example.com
-      to_email: team@example.com
-      password: your_password_here
+ # Example 1: Data synchronization
+ - name: data_sync
+ script: ./scripts/sync_data.py
+ schedule: "*/30 * * * *" # Every 30 minutes
+ retries: 3
+ notify: desktop
+ 
+ # Example 2: Daily backup
+ - name: daily_backup
+ script: ./scripts/backup.py
+ schedule: "0 2 * * *" # Daily at 2 AM
+ retries: 5
+ notify: email
+ email:
+ smtp_server: smtp.gmail.com
+ smtp_port: 587
+ from_email: backup@example.com
+ to_email: admin@example.com
+ password: your_password_here
+ use_tls: true
+ 
+ # Example 3: Hourly cleanup
+ - name: cleanup
+ script: ./scripts/cleanup.py
+ schedule: "0 * * * *" # Every hour
+ retries: 2
+ 
+ # Example 4: Weekly report
+ - name: weekly_report
+ script: ./scripts/generate_report.py
+ schedule: "0 9 * * 1" # Monday at 9 AM
+ retries: 3
+ notify: email
+ email:
+ smtp_server: smtp.gmail.com
+ smtp_port: 587
+ from_email: reports@example.com
+ to_email: team@example.com
+ password: your_password_here
 
 # Logging configuration
 logging:
-  level: INFO  # DEBUG, INFO, WARNING, ERROR, CRITICAL
-  path: ./logs/autocron.log
+ level: INFO # DEBUG, INFO, WARNING, ERROR, CRITICAL
+ path: ./logs/autocron.log
 
 # Notifications
 notifications:
-  desktop: true  # Enable desktop notifications
-  email: false   # Disable default email notifications
+ desktop: true # Enable desktop notifications
+ email: false # Disable default email notifications

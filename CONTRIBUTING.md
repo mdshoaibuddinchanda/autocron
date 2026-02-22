@@ -23,7 +23,7 @@ cd autocron
 
 ```bash
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate # On Windows: venv\Scripts\activate
 ```
 
 3. **Install dependencies**
@@ -129,26 +129,26 @@ Then create a pull request on GitHub.
 
 ```python
 def function_name(arg1: str, arg2: int) -> bool:
-    """
-    Brief description of function.
-    
-    Longer description if needed.
-    
-    Args:
-        arg1: Description of arg1
-        arg2: Description of arg2
-        
-    Returns:
-        Description of return value
-        
-    Raises:
-        ValueError: When input is invalid
-        
-    Examples:
-        >>> function_name("test", 42)
-        True
-    """
-    pass
+ """
+ Brief description of function.
+ 
+ Longer description if needed.
+ 
+ Args:
+ arg1: Description of arg1
+ arg2: Description of arg2
+ 
+ Returns:
+ Description of return value
+ 
+ Raises:
+ ValueError: When input is invalid
+ 
+ Examples:
+ >>> function_name("test", 42)
+ True
+ """
+ pass
 ```
 
 ## Testing Guidelines
@@ -166,23 +166,23 @@ def function_name(arg1: str, arg2: int) -> bool:
 
 ```python
 class TestFeature:
-    """Test suite for feature."""
-    
-    def test_basic_functionality(self):
-        """Test basic functionality."""
-        # Arrange
-        expected = "result"
-        
-        # Act
-        actual = function_under_test()
-        
-        # Assert
-        assert actual == expected
-    
-    def test_error_handling(self):
-        """Test error handling."""
-        with pytest.raises(ValueError):
-            function_under_test(invalid_input)
+ """Test suite for feature."""
+ 
+ def test_basic_functionality(self):
+ """Test basic functionality."""
+ # Arrange
+ expected = "result"
+ 
+ # Act
+ actual = function_under_test()
+ 
+ # Assert
+ assert actual == expected
+ 
+ def test_error_handling(self):
+ """Test error handling."""
+ with pytest.raises(ValueError):
+ function_under_test(invalid_input)
 ```
 
 ### Running Tests
@@ -225,25 +225,25 @@ make html
 ## Pull Request Process
 
 1. **Ensure CI passes**
-   - All tests pass
-   - Code coverage maintained
-   - Linting passes
-   - No security issues
+ - All tests pass
+ - Code coverage maintained
+ - Linting passes
+ - No security issues
 
 2. **Update documentation**
-   - Update README if needed
-   - Add/update docstrings
-   - Update CHANGELOG.md
+ - Update README if needed
+ - Add/update docstrings
+ - Update CHANGELOG.md
 
 3. **Request review**
-   - Assign reviewers
-   - Respond to feedback
-   - Make requested changes
+ - Assign reviewers
+ - Respond to feedback
+ - Make requested changes
 
 4. **Merge**
-   - Squash commits if needed
-   - Merge to develop branch
-   - Delete feature branch
+ - Squash commits if needed
+ - Merge to develop branch
+ - Delete feature branch
 
 ## Release Process
 
@@ -303,4 +303,4 @@ Include:
 - Check existing issues
 - Read the documentation
 
-Thank you for contributing to AutoCron! 🎉
+Thank you for contributing to AutoCron! 

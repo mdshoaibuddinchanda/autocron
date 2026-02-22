@@ -7,18 +7,18 @@ These modules handle interaction with users and external systems.
 
 # Import selectively to avoid circular imports
 from .notifications import (
-    DesktopNotifier,
-    EmailNotifier,
-    NotificationError,
-    NotificationManager,
-    Notifier,
+ DesktopNotifier,
+ EmailNotifier,
+ NotificationError,
+ NotificationManager,
+ Notifier,
 )
 
 __all__ = [
-    # Notifications
-    "Notifier",
-    "DesktopNotifier",
-    "EmailNotifier",
-    "NotificationManager",
-    "NotificationError",
+ # Notifications
+ "Notifier",
+ "DesktopNotifier",
+ "EmailNotifier",
+ "NotificationManager",
+ "NotificationError",
 ]

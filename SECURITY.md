@@ -4,12 +4,12 @@
 
 We release patches for security vulnerabilities for the following versions:
 
-| Version | Supported          |
+| Version | Supported |
 | ------- | ------------------ |
-| 1.2.x   | :white_check_mark: |
-| 1.1.x   | :white_check_mark: |
-| 1.0.x   | :white_check_mark: |
-| < 1.0   | :x:                |
+| 1.2.x | :white_check_mark: |
+| 1.1.x | :white_check_mark: |
+| 1.0.x | :white_check_mark: |
+| < 1.0 | :x: |
 
 ## Reporting a Vulnerability
 
@@ -24,13 +24,13 @@ We take the security of AutoCron seriously. If you believe you have found a secu
 
 1. **Email us directly** at: mdshoaibuddinchanda@gmail.com
 2. **Include the following information:**
-   - Type of vulnerability
-   - Full paths of source file(s) related to the vulnerability
-   - Location of the affected source code (tag/branch/commit or direct URL)
-   - Step-by-step instructions to reproduce the issue
-   - Proof-of-concept or exploit code (if possible)
-   - Impact of the vulnerability
-   - Your suggestions for mitigation (if any)
+ - Type of vulnerability
+ - Full paths of source file(s) related to the vulnerability
+ - Location of the affected source code (tag/branch/commit or direct URL)
+ - Step-by-step instructions to reproduce the issue
+ - Proof-of-concept or exploit code (if possible)
+ - Impact of the vulnerability
+ - Your suggestions for mitigation (if any)
 
 ### What to Expect:
 
@@ -54,7 +54,7 @@ We take the security of AutoCron seriously. If you believe you have found a secu
 
 When using AutoCron:
 
-### 1. Safe Mode (New in v1.2.0) 🔒
+### 1. Safe Mode (New in v1.2.0) 
 
 **Safe Mode provides sandboxed execution with resource limits to protect against:**
 - Runaway scripts consuming excessive memory
@@ -70,35 +70,35 @@ scheduler = AutoCron()
 
 # Untrusted or resource-intensive scripts
 scheduler.add_task(
-    name="external_script",
-    script="user_provided.py",
-    every="1h",
-    safe_mode=True,          # ⚡ Enable process isolation
-    max_memory_mb=256,       # Limit memory to 256MB
-    max_cpu_percent=50,      # Limit CPU to 50% (Unix only)
-    timeout=300              # 5 minute timeout
+ name="external_script",
+ script="user_provided.py",
+ every="1h",
+ safe_mode=True, # Enable process isolation
+ max_memory_mb=256, # Limit memory to 256MB
+ max_cpu_percent=50, # Limit CPU to 50% (Unix only)
+ timeout=300 # 5 minute timeout
 )
 ```
 
 **Safe Mode Features:**
-- ✅ **Process Isolation**: Tasks run in separate subprocess
-- ✅ **Memory Limits**: Enforce maximum memory usage (Unix/Linux/Mac)
-- ✅ **CPU Limits**: Control CPU consumption (Unix/Linux/Mac)
-- ✅ **Timeout Enforcement**: Hard kill after specified time
-- ✅ **Output Sanitization**: Truncate large outputs (10KB limit)
-- ✅ **Error Containment**: Failures don't affect parent process
+- **Process Isolation**: Tasks run in separate subprocess
+- **Memory Limits**: Enforce maximum memory usage (Unix/Linux/Mac)
+- **CPU Limits**: Control CPU consumption (Unix/Linux/Mac)
+- **Timeout Enforcement**: Hard kill after specified time
+- **Output Sanitization**: Truncate large outputs (10KB limit)
+- **Error Containment**: Failures don't affect parent process
 
 **When to Use Safe Mode:**
-- ✅ Running user-provided scripts
-- ✅ Production environments with strict SLAs
-- ✅ Multi-tenant task scheduling
-- ✅ Tasks with unknown resource requirements
-- ✅ Scripts that process external data
+- Running user-provided scripts
+- Production environments with strict SLAs
+- Multi-tenant task scheduling
+- Tasks with unknown resource requirements
+- Scripts that process external data
 
 **Safe Mode Limitations:**
-- ⚠️ Only works with script-based tasks (not function tasks)
-- ⚠️ Slight performance overhead (subprocess creation)
-- ⚠️ Resource limits more effective on Unix/Linux/Mac
+- ️ Only works with script-based tasks (not function tasks)
+- ️ Slight performance overhead (subprocess creation)
+- ️ Resource limits more effective on Unix/Linux/Mac
 
 ### 2. Credentials Management
 
@@ -110,11 +110,11 @@ scheduler.add_task(
 import os
 
 email_config = {
-    'smtp_server': 'smtp.gmail.com',
-    'smtp_port': 587,
-    'from_email': os.environ.get('EMAIL_FROM'),
-    'to_email': os.environ.get('EMAIL_TO'),
-    'password': os.environ.get('EMAIL_PASSWORD')
+ 'smtp_server': 'smtp.gmail.com',
+ 'smtp_port': 587,
+ 'from_email': os.environ.get('EMAIL_FROM'),
+ 'to_email': os.environ.get('EMAIL_TO'),
+ 'password': os.environ.get('EMAIL_PASSWORD')
 }
 ```
 
@@ -135,16 +135,16 @@ scheduler = AutoCron()
 # Validate script path
 script_path = os.path.abspath(user_provided_path)
 if not script_path.startswith('/safe/directory/'):
-    raise ValueError("Invalid script path")
+ raise ValueError("Invalid script path")
 
 # Run with safe mode
 scheduler.add_task(
-    name="validated_task",
-    script=script_path,
-    every="1h",
-    safe_mode=True,       # ⚡ Enable sandboxing
-    max_memory_mb=200,
-    timeout=600
+ name="validated_task",
+ script=script_path,
+ every="1h",
+ safe_mode=True, # Enable sandboxing
+ max_memory_mb=200,
+ timeout=600
 )
 ```
 
