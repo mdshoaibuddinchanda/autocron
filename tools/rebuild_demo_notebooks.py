@@ -17,7 +17,7 @@ DEMO = ROOT / "demo"
 NOTEBOOKS = {
     "01_basic_scheduling.ipynb": [
         ("markdown", "# Basic scheduling\n\nCreate an interval task and inspect its next run."),
-        ("code", """from autocron import AutoCron\n\nscheduler = AutoCron(timezone=\"UTC\")\ntask_id = scheduler.add_task(name=\"heartbeat\", func=lambda: None, every=\"5m\")\ntask = scheduler.get_task(task_id=task_id)\nprint(task.name, task.schedule_type, task.schedule_value, task.timezone)\nprint(task.next_run.tzinfo)"""),
+        ("code", """from autocron import AutoCron\n\nscheduler = AutoCron(timezone=\"UTC\", log_level=\"WARNING\")\ntask_id = scheduler.add_task(name=\"heartbeat\", func=lambda: None, every=\"5m\")\ntask = scheduler.get_task(task_id=task_id)\nprint(task.name, task.schedule_type, task.schedule_value, task.timezone)\nprint(task.next_run.tzinfo)"""),
     ],
     "02_advanced_features.ipynb": [
         ("markdown", "# Advanced scheduling policies\n\nTimezone, overlap, coalescing, and misfire settings are explicit task policy."),
@@ -25,15 +25,15 @@ NOTEBOOKS = {
     ],
     "03_async_tasks.ipynb": [
         ("markdown", "# Async tasks\n\nAsync callables use the same scheduler execution API."),
-        ("code", """import asyncio\nfrom autocron import AutoCron\n\nasync def fetch_value():\n    await asyncio.sleep(0)\n    return 42\n\nscheduler = AutoCron(timezone=\"UTC\")\nprint(scheduler._execute_function(fetch_value, timeout=1))"""),
+        ("code", """import asyncio\nfrom autocron import AutoCron\n\nasync def fetch_value():\n    await asyncio.sleep(0)\n    return 42\n\nscheduler = AutoCron(timezone=\"UTC\", log_level=\"WARNING\")\nprint(scheduler._execute_function(fetch_value, timeout=1))"""),
     ],
     "04_persistence.ipynb": [
         ("markdown", "# YAML persistence\n\nScript tasks can be saved and restored across process restarts."),
-        ("code", """import tempfile\nfrom pathlib import Path\nfrom autocron import AutoCron\n\nwith tempfile.TemporaryDirectory() as directory:\n    script = Path(directory) / \"job.py\"\n    script.write_text(\"print('job')\", encoding=\"utf-8\")\n    save_path = Path(directory) / \"tasks.yaml\"\n    first = AutoCron(timezone=\"UTC\")\n    first.add_task(name=\"persisted\", script=str(script), every=\"1h\")\n    first.save_tasks(str(save_path))\n    second = AutoCron(timezone=\"UTC\")\n    print(second.load_tasks(str(save_path)), second.get_task(name=\"persisted\").timezone)"""),
+        ("code", """import tempfile\nfrom pathlib import Path\nfrom autocron import AutoCron\n\nwith tempfile.TemporaryDirectory() as directory:\n    script = Path(directory) / \"job.py\"\n    script.write_text(\"print('job')\", encoding=\"utf-8\")\n    save_path = Path(directory) / \"tasks.yaml\"\n    first = AutoCron(timezone=\"UTC\", log_level=\"WARNING\")\n    first.add_task(name=\"persisted\", script=str(script), every=\"1h\")\n    first.save_tasks(str(save_path))\n    second = AutoCron(timezone=\"UTC\", log_level=\"WARNING\")\n    print(second.load_tasks(str(save_path)), second.get_task(name=\"persisted\").timezone)"""),
     ],
     "05_safe_mode.ipynb": [
         ("markdown", "# Safe-mode subprocess execution\n\nSafe mode isolates script failures and captures bounded output."),
-        ("code", """import tempfile\nfrom pathlib import Path\nfrom autocron import AutoCron\n\nwith tempfile.TemporaryDirectory() as directory:\n    script = Path(directory) / \"safe_job.py\"\n    script.write_text(\"print('isolated')\", encoding=\"utf-8\")\n    output = AutoCron(timezone=\"UTC\")._execute_in_safe_mode(str(script), 10, None, None)\n    print(output.strip())"""),
+        ("code", """import tempfile\nfrom pathlib import Path\nfrom autocron import AutoCron\n\nwith tempfile.TemporaryDirectory() as directory:\n    script = Path(directory) / \"safe_job.py\"\n    script.write_text(\"print('isolated')\", encoding=\"utf-8\")\n    output = AutoCron(timezone=\"UTC\", log_level=\"WARNING\")._execute_in_safe_mode(str(script), 10, None, None)\n    print(output.strip())"""),
     ],
     "06_dashboard.ipynb": [
         ("markdown", "# Dashboard analytics\n\nExecution history is stored in SQLite and rendered by the optional dashboard."),
@@ -77,7 +77,13 @@ def build_notebook(name: str, cells: list[tuple[str, str]]) -> None:
 
 def _sanitize_output(value: str) -> str:
     value = re.sub(r"\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} - ", "<timestamp> - ", value)
-    return re.sub(r"[A-Za-z]:\\Users\\[^\r\n ]+", "<temporary path>", value)
+    value = re.sub(r"[A-Za-z]:\\Users\\[^\r\n ]+", "<temporary path>", value)
+    return re.sub(
+        r"\b[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\b",
+        "<task id>",
+        value,
+        flags=re.IGNORECASE,
+    )
 
 
 if __name__ == "__main__":
