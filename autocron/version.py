@@ -1,6 +1,8 @@
 """AutoCron version information."""
 
-__version__ = "1.2.0"
+# Keep this as the single source of truth for source builds and package metadata.
+# Change to ``1.3.0`` only for the final release tag.
+__version__ = "1.3.0.dev0"
 __author__ = "MD Shoaib Uddin Chanda"
 __email__ = "mdshoaibuddinchanda@gmail.com"
 __license__ = "MIT"

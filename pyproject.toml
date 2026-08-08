@@ -1,10 +1,10 @@
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
+requires = ["setuptools>=69.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "autocron-scheduler"
-version = "1.2.0"
+dynamic = ["version"]
 description = "Automate scripts with zero setup. Run Python tasks anytime, anywhere."
 readme = "README.md"
 authors = [
@@ -13,12 +13,12 @@ authors = [
 maintainers = [
  {name = "MD Shoaib Uddin Chanda", email = "mdshoaibuddinchanda@gmail.com"}
 ]
-license = {text = "MIT"}
+license = "MIT"
+license-files = ["LICENSE"]
 keywords = ["scheduler", "cron", "automation", "task", "periodic", "cross-platform"]
 classifiers = [
- "Development Status :: 5 - Production/Stable",
+ "Development Status :: 4 - Beta",
  "Intended Audience :: Developers",
- "License :: OSI Approved :: MIT License",
  "Programming Language :: Python :: 3",
  "Programming Language :: Python :: 3.10",
  "Programming Language :: Python :: 3.11",
@@ -36,11 +36,9 @@ classifiers = [
 requires-python = ">=3.10"
 dependencies = [
  "croniter>=1.4.0",
- "python-crontab>=3.0.0; platform_system=='Linux' or platform_system=='Darwin'",
- "pywin32>=305; platform_system=='Windows'",
- "tqdm>=4.66.5",
  "psutil>=5.9.0",
  "pyyaml>=6.0",
+ "tzdata>=2024.1; platform_system=='Windows'",
 ]
 
 [project.optional-dependencies]
@@ -55,12 +53,33 @@ dev = [
  "mypy>=1.5.0",
  "isort>=5.12.0",
  "pylint>=2.17.0",
+ "build>=1.2.2",
+ "twine>=5.1.1",
+ "check-jsonschema>=0.31.0",
+ "types-croniter>=2.0.0",
+ "types-PyYAML>=6.0.0",
 ]
 notifications = [
  "plyer>=2.1.0",
 ]
 dashboard = [
  "rich>=13.0.0",
+]
+docs = [
+ "mkdocs>=1.6.0",
+ "mkdocs-material>=9.5.0",
+ "mkdocstrings[python]>=0.27.0",
+ "linkchecker>=10.5.0",
+]
+demo = [
+ "nbclient>=0.10.0",
+ "nbformat>=5.10.0",
+ "ipykernel>=6.29.0",
+ "nbmake>=1.5.5",
+]
+security = [
+ "bandit[toml]>=1.7.10",
+ "pip-audit>=2.7.3",
 ]
 all = [
  "plyer>=2.1.0",
@@ -69,15 +88,22 @@ all = [
 
 [project.urls]
 Homepage = "https://github.com/mdshoaibuddinchanda/autocron"
-Documentation = "https://autocron.readthedocs.io"
+Documentation = "https://mdshoaibuddinchanda.github.io/autocron/"
 Repository = "https://github.com/mdshoaibuddinchanda/autocron"
 "Bug Tracker" = "https://github.com/mdshoaibuddinchanda/autocron/issues"
+PyPI = "https://pypi.org/project/autocron-scheduler/"
 
 [project.scripts]
-autocron = "autocron.cli:main"
+autocron = "autocron.interface.cli:main"
 
 [tool.setuptools]
-packages = ["autocron"]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["autocron", "autocron.*"]
+
+[tool.setuptools.dynamic]
+version = {attr = "autocron.version.__version__"}
 
 [tool.setuptools.package-data]
 autocron = ["py.typed"]
@@ -122,16 +148,22 @@ markers = [
  "windows: marks tests that only run on Windows",
  "linux: marks tests that only run on Linux",
  "darwin: marks tests that only run on macOS",
+ "packaging: marks isolated wheel/sdist build and installation tests",
+ "system: marks tests that may modify the host OS scheduler",
 ]
 
 [tool.coverage.run]
+branch = true
+relative_files = true
+concurrency = ["thread"]
 source = ["autocron"]
-omit = ["*/tests/*", "*/test_*.py", "autocron/cli.py"]
+omit = ["*/tests/*", "*/test_*.py"]
 
 [tool.coverage.report]
 precision = 2
 show_missing = true
 skip_covered = false
+fail_under = 75
 exclude_lines = [
  "pragma: no cover",
  "def __repr__",

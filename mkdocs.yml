@@ -1,0 +1,42 @@
+site_name: AutoCron
+site_description: A cross-platform Python task scheduler with persistent CLI workflows.
+site_url: https://mdshoaibuddinchanda.github.io/autocron/
+repo_url: https://github.com/mdshoaibuddinchanda/autocron
+repo_name: mdshoaibuddinchanda/autocron
+
+theme:
+  name: material
+  features:
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+
+nav:
+  - Home: index.md
+  - Installation: installation.md
+  - Quick start: quickstart.md
+  - Complete guide: complete-guide.md
+  - Architecture: architecture.md
+  - API reference: api-reference.md
+  - FAQ: faq.md
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: google
+            show_source: true
+            members_order: source
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - tables
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+
+strict: true
+

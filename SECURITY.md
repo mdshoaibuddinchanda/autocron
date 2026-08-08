@@ -1,238 +1,69 @@
-# Security Policy
+# Security policy
 
-## Supported Versions
+## Supported versions
 
-We release patches for security vulnerabilities for the following versions:
+Security fixes are applied to the latest released minor version. Older releases
+may receive a fix when the change can be backported safely.
 
-| Version | Supported |
-| ------- | ------------------ |
-| 1.2.x | :white_check_mark: |
-| 1.1.x | :white_check_mark: |
-| 1.0.x | :white_check_mark: |
-| < 1.0 | :x: |
+| Version | Support |
+|---|---|
+| 1.3.x | Supported after release |
+| 1.2.x | Critical fixes during the v1.3 transition |
+| < 1.2 | Not supported |
 
-## Reporting a Vulnerability
+## Reporting a vulnerability
 
-We take the security of AutoCron seriously. If you believe you have found a security vulnerability, please report it to us as described below.
+Please use GitHub's private vulnerability reporting flow from the repository's
+Security tab. If that is unavailable, email the maintainer address published in
+`pyproject.toml` with the subject `AutoCron security report`.
 
-### Please Do Not:
+Include the affected version, operating system, a minimal reproduction, impact,
+and any suggested mitigation. Do not open a public issue until a fix or disclosure
+plan is available. An initial acknowledgement should arrive within five business
+days.
 
-- Open a public GitHub issue
-- Disclose the vulnerability publicly before we've had a chance to address it
+## Security boundaries
 
-### Please Do:
+### Subprocess execution is not a sandbox
 
-1. **Email us directly** at: mdshoaibuddinchanda@gmail.com
-2. **Include the following information:**
- - Type of vulnerability
- - Full paths of source file(s) related to the vulnerability
- - Location of the affected source code (tag/branch/commit or direct URL)
- - Step-by-step instructions to reproduce the issue
- - Proof-of-concept or exploit code (if possible)
- - Impact of the vulnerability
- - Your suggestions for mitigation (if any)
+AutoCron can launch a Python script in a separate process, cap output, terminate
+process trees, apply selected resource limits, and reduce inherited environment
+variables. These controls improve operational isolation. They do not remove the
+child's operating-system identity, filesystem permissions, or network access.
 
-### What to Expect:
+Run hostile or multi-tenant code in a container, virtual machine, or restricted
+account configured as a real security boundary.
 
-- **Acknowledgment**: We will acknowledge receipt of your vulnerability report within 48 hours
-- **Assessment**: We will assess the vulnerability and determine its impact
-- **Timeline**: We will provide an estimated timeline for a fix
-- **Updates**: We will keep you informed of our progress
-- **Credit**: We will credit you for the discovery (unless you prefer to remain anonymous)
-- **Disclosure**: Once the vulnerability is fixed, we will coordinate public disclosure
+### Secrets
 
-### Security Update Process:
+- Do not commit SMTP passwords, API keys, or tokens.
+- Task persistence intentionally omits notification passwords.
+- Provide credentials at runtime through an appropriate secret store.
+- Remember that child processes may inherit explicitly allowed environment
+  variables.
 
-1. Vulnerability is reported and confirmed
-2. Fix is developed and tested
-3. Security advisory is drafted
-4. Patch is released
-5. Security advisory is published
-6. CVE is requested (if applicable)
+### Persistent data
 
-## Security Best Practices
+Protect the SQLite database, logs, exports, and analytics files with suitable
+filesystem permissions. They can contain script paths, task names, errors, and
+execution history. Back up persistent state and verify database recovery.
 
-When using AutoCron:
+### Operating-system adapters
 
-### 1. Safe Mode (New in v1.2.0) 
+Windows Task Scheduler and POSIX cron adapters change user-level system state.
+Validate task names and paths, use least privilege, and review generated commands
+before enabling system integration in production. The normal test suite mocks
+these adapters; real system tests require explicit opt-in.
 
-**Safe Mode provides sandboxed execution with resource limits to protect against:**
-- Runaway scripts consuming excessive memory
-- CPU-intensive tasks blocking the system
-- Arbitrary code execution risks
-- Task failures affecting other tasks
+### Notifications
 
-**Enable Safe Mode for:**
-```python
-from autocron import AutoCron
+SMTP uses TLS when configured, but server authenticity and credential handling
+remain deployment responsibilities. Notification messages may include task names
+or error summaries, so avoid including sensitive values in exceptions.
 
-scheduler = AutoCron()
+## Security checks
 
-# Untrusted or resource-intensive scripts
-scheduler.add_task(
- name="external_script",
- script="user_provided.py",
- every="1h",
- safe_mode=True, # Enable process isolation
- max_memory_mb=256, # Limit memory to 256MB
- max_cpu_percent=50, # Limit CPU to 50% (Unix only)
- timeout=300 # 5 minute timeout
-)
-```
-
-**Safe Mode Features:**
-- **Process Isolation**: Tasks run in separate subprocess
-- **Memory Limits**: Enforce maximum memory usage (Unix/Linux/Mac)
-- **CPU Limits**: Control CPU consumption (Unix/Linux/Mac)
-- **Timeout Enforcement**: Hard kill after specified time
-- **Output Sanitization**: Truncate large outputs (10KB limit)
-- **Error Containment**: Failures don't affect parent process
-
-**When to Use Safe Mode:**
-- Running user-provided scripts
-- Production environments with strict SLAs
-- Multi-tenant task scheduling
-- Tasks with unknown resource requirements
-- Scripts that process external data
-
-**Safe Mode Limitations:**
-- ️ Only works with script-based tasks (not function tasks)
-- ️ Slight performance overhead (subprocess creation)
-- ️ Resource limits more effective on Unix/Linux/Mac
-
-### 2. Credentials Management
-
-- **Never** hardcode credentials in scripts or configuration files
-- Use environment variables for sensitive data
-- Use a secrets management system (e.g., AWS Secrets Manager, HashiCorp Vault)
-
-```python
-import os
-
-email_config = {
- 'smtp_server': 'smtp.gmail.com',
- 'smtp_port': 587,
- 'from_email': os.environ.get('EMAIL_FROM'),
- 'to_email': os.environ.get('EMAIL_TO'),
- 'password': os.environ.get('EMAIL_PASSWORD')
-}
-```
-
-### 3. Script Execution
-
-- **Use Safe Mode for untrusted scripts** (v1.2.0+)
-- Validate and sanitize all script paths
-- Use absolute paths when possible
-- Set appropriate file permissions
-- Run with least privilege necessary
-
-```python
-import os
-from autocron import AutoCron
-
-scheduler = AutoCron()
-
-# Validate script path
-script_path = os.path.abspath(user_provided_path)
-if not script_path.startswith('/safe/directory/'):
- raise ValueError("Invalid script path")
-
-# Run with safe mode
-scheduler.add_task(
- name="validated_task",
- script=script_path,
- every="1h",
- safe_mode=True, # Enable sandboxing
- max_memory_mb=200,
- timeout=600
-)
-```
-
-### 3. Input Validation
-
-- Validate all user inputs
-- Sanitize task names and descriptions
-- Validate cron expressions
-- Check file paths before execution
-
-### 4. Logging
-
-- Don't log sensitive information
-- Sanitize logs before storage
-- Rotate and secure log files
-- Monitor logs for suspicious activity
-
-### 5. Network Security
-
-- Use TLS for email notifications
-- Validate SSL certificates
-- Use secure SMTP configurations
-- Implement rate limiting
-
-### 6. System Security
-
-- Keep AutoCron updated
-- Review scheduled tasks regularly
-- Audit task execution logs
-- Monitor system resources
-
-## Known Security Considerations
-
-### OS-Level Scheduling
-
-AutoCron can integrate with OS-level schedulers (cron, Task Scheduler):
-
-- Tasks run with user privileges
-- Review scheduled tasks regularly
-- Secure crontab/Task Scheduler access
-- Monitor for unauthorized task modifications
-
-### Email Notifications
-
-Email notifications require SMTP credentials:
-
-- Use app-specific passwords
-- Enable 2FA on email accounts
-- Rotate credentials regularly
-- Monitor for unauthorized access
-
-### Script Execution
-
-AutoCron executes Python scripts:
-
-- Review scripts before scheduling
-- Use code signing when possible
-- Implement script whitelisting
-- Monitor script modifications
-
-## Security Advisories
-
-Security advisories will be published:
-
-- GitHub Security Advisories
-- Project documentation
-- Mailing list (if subscribed)
-- Twitter/social media
-
-## Compliance
-
-AutoCron strives to follow:
-
-- OWASP Top 10 guidelines
-- CWE/SANS Top 25
-- Python security best practices
-- Industry-standard security practices
-
-## Contact
-
-For security concerns, contact:
-- Email: mdshoaibuddinchanda@gmail.com
-- PGP Key: [Contact for PGP key]
-
-For general questions:
-- GitHub Issues: https://github.com/mdshoaibuddinchanda/autocron/issues
-- GitHub Discussions: https://github.com/mdshoaibuddinchanda/autocron/discussions
-
----
-
-**Thank you for helping keep AutoCron and our users safe!**
+CI performs dependency, static-analysis, packaging, and test checks. A passing
+scanner is useful evidence, not a guarantee that the project has no
+vulnerabilities. Security-sensitive scheduling and subprocess behavior is also
+covered by behavioral tests.
